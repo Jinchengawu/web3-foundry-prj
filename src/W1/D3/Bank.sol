@@ -8,7 +8,7 @@ contract Bank {
     address private contractAddress;
 
     constructor() {
-      owner = address(this);
+      owner = msg.sender;
       contractAddress = address(this);
     }
 
@@ -23,19 +23,6 @@ contract Bank {
       getTop3Address();
     }
 
-//     receive(uint256 amount) external payable{
-// require(msg.value >=0 , "deposit value mast > 0" );     
-//       balances[msg.sender] = balances[msg.sender] > 0 ?  balances[msg.sender] += amount : amount;
-//       if(balances[msg.sender] > balances[Top3Address[0]]){
-//         Top3Address[0] = msg.sender;
-//       }
-//       if(balances[msg.sender] > balances[Top3Address[1]]){
-//         Top3Address[1] = msg.sender;
-//       }
-//       payable(owner).transfer(amount);
-//       getTop3Address();
-//     }
-
     // 存款
     function deposit() public payable{
       require(msg.value >0 , "deposit value mast > 0" );     
@@ -47,7 +34,9 @@ contract Bank {
         Top3Address[1] = msg.sender;
       }
     }
-
+    receive() external payable{
+      deposit(msg.value);
+    }
     // 获取前3名存款地址
     function getTop3Address() public view returns (address[3] memory) {
 
@@ -57,17 +46,12 @@ contract Bank {
 
     // 获取合约余额
     function getBalance() public view returns (uint256) {
-        return owner.balance;
+        return contractAddress.balance;
     }
 
     // 获取onwer
     function getOwner() public view returns (address) {
         return owner;
-    }
-
-     // 获取onwer.balance
-    function getOwnerBalance() public view returns (uint256) {
-        return contractAddress.balance;
     }
 
     // 获取msg
@@ -76,7 +60,7 @@ contract Bank {
     }
 
     function changeOwner() public {
-      // require(msg.sender == owner, "Only owner can change owner");
+      require(msg.sender == owner, "Only owner can change owner");
       owner = msg.sender;
     }
 }
