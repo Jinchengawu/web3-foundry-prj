@@ -13,12 +13,10 @@ contract Bank {
     }
 
     // 提现
-    function withdraw(address _fromAddress, address _toAddress, uint256 amount) public payable{
+    function withdraw( address _toAddress, uint256 amount) public payable{
       require(msg.sender == owner, "Only owner can withdraw");
       require(_toAddress != address(0), "toAddress is not 0");
-      require(_fromAddress != address(0), "_fromAddress is not 0");
       require(contractAddress.balance >= amount, "Insufficient balance");
-      balances[_fromAddress] -= amount;
       payable(_toAddress).transfer(amount);
       getTop3Address();
     }
