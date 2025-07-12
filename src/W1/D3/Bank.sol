@@ -1,6 +1,12 @@
-pragma solidity ^0.8.0;
+pragma solidity^0.8.13;
 
-contract Bank {
+interface IBank {
+    function deposit() external payable;
+    function withdraw(address _toAddress, uint256 amount) external payable;
+    function changeOwner(address _newOwner) external;
+}
+
+contract Bank is IBank {
   //  余额映射，用来存储用户跟存款
     mapping(address => uint256) private balances;
     address[3] private Top3Address;
@@ -13,52 +19,37 @@ contract Bank {
     }
 
     // 提现
-    function withdraw( address _toAddress, uint256 amount) public payable{
+    function withdraw( address _toAddress, uint256 amount) public payable virtual {
       require(msg.sender == owner, "Only owner can withdraw");
       require(_toAddress != address(0), "toAddress is not 0");
       require(contractAddress.balance >= amount, "Insufficient balance");
-      payable(_toAddress).transfer(amount);
-      getTop3Address();
+      payable(_toAddress).transfer(amount);      
     }
 
     // 存款
-    function deposit() public payable{
+    function deposit() public payable virtual {
       require(msg.value >0 , "deposit value mast > 0" );     
       balances[msg.sender] = balances[msg.sender] += msg.value;
       if(balances[msg.sender] > balances[Top3Address[0]]){
+        Top3Address[2] = Top3Address[1];
+        Top3Address[1] = Top3Address[0];
         Top3Address[0] = msg.sender;
-      }
-      if(balances[msg.sender] > balances[Top3Address[1]]){
+      } else if(balances[msg.sender] > balances[Top3Address[1]]){
+        Top3Address[2] = Top3Address[1];
         Top3Address[1] = msg.sender;
+      } else if(balances[msg.sender] > balances[Top3Address[2]]){
+        Top3Address[2] = msg.sender;
       }
     }
+
+    // 转移管理员权限
+    function changeOwner(address _newOwner) public virtual {
+        require(msg.sender == owner, "Only owner can change owner");
+        require(_newOwner != address(0), "New owner cannot be zero address");
+        owner = _newOwner;
+    }
+
     receive() external payable{
-      deposit(msg.value);
-    }
-    // 获取前3名存款地址
-    function getTop3Address() public view returns (address[3] memory) {
-
-
-      return Top3Address;
-    }
-
-    // 获取合约余额
-    function getBalance() public view returns (uint256) {
-        return contractAddress.balance;
-    }
-
-    // 获取onwer
-    function getOwner() public view returns (address) {
-        return owner;
-    }
-
-    // 获取msg
-    function getMsgAddress() public view returns (address) {
-        return msg.sender;
-    }
-
-    function changeOwner() public {
-      require(msg.sender == owner, "Only owner can change owner");
-      owner = msg.sender;
-    }
+      deposit();
+    }  
 }

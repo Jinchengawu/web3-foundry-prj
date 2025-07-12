@@ -1,62 +1,50 @@
-pragma solidity ^0.8.0;
+pragma solidity^0.8.13;
+/**
+在 该挑战 的 Bank 合约基础之上，编写 IBank 接口及BigBank 合约，
+使其满足 Bank 实现 IBank， BigBank 继承自 Bank ， 同时 BigBank 有附加要求：
+
+要求存款金额 >0.001 ether（用modifier权限控制）
+BigBank 合约支持转移管理员
+
+
+编写一个 Admin 合约， Admin 合约有自己的 Owner ，
+同时有一个取款函数 adminWithdraw(IBank bank) , 
+adminWithdraw 中会调用 IBank 接口的 withdraw 方法从而把 bank 
+合约内的资金转移到 Admin 合约地址。
+
+ */
 import "../D3/Bank.sol";
-interface IBank {
 
-  function deposit(uint256 amount) payable external;
-  function withdraw(address _toAddress) payable external;
-  function changeOwner(address _newOwner) external;
-}
+contract BigBank is Bank {
+    address public bigBankOwner;
 
-
-
-contract BigBank is IBank{
-    address public owner;        
-
-  modifier checkDeposit(){
-    require(msg.value > 0.0001, "Deposit amount must be greater than 0");
-    _;
-  }
-
-  modifier checkWithdraw(){
-    require(msg.sender == owner, "Only owner can withdraw");
-    _;
-  }
-
-  modifier checkChangeOwner(){
-    require(msg.sender == owner, "Only owner can changeOwner");
-    _;
-  }
-    constructor(){
-      owner = msg.sender;
-    }
-    function changeOwner(address _newOwner) external checkChangeOwner{
-      owner = _newOwner;
+    modifier onlyBigBankOwner() {
+        require(msg.sender == bigBankOwner, "Only bigBank owner can call this function");
+        _;
     }
 
-    function deposit(uint256 amount) payable external checkDeposit{
-      payable(owner).transfer(amount);
+    modifier checkDeposit() {
+        require(msg.value > 0.001 ether, "Deposit amount must be greater than 0.001 ether");
+        _;
+    }        
+    
+    constructor() {
+        bigBankOwner = msg.sender;
     }
 
-    function withdraw(address _toAddress) payable external checkWithdraw{
-      Bank bank = Bank(address(this));
-      bank.withdraw( _toAddress, address(this).balance);
+    function deposit() public override payable checkDeposit {
+        // 调用父合约的deposit函数
+        super.deposit();
     }
-}
+    
+    function changeOwner(address _newOwner) public override onlyBigBankOwner {
+        require(_newOwner != address(0), "New owner cannot be zero address");
+        bigBankOwner = _newOwner;
+        super.changeOwner(_newOwner);
+    }
 
-
-contract Admin {
-  address public owner;
-  constructor(){
-    owner = msg.sender;
-  }
-
-  // 
-  function adminWithdraw(IBank bank) payable public {
-    bank.withdraw(owner.address);
-  }
-
-  function changeOwner(address _newOwner) external {
-    require(msg.sender == owner, "Only owner can change owner");
-    owner = _newOwner;
-  }
+    function withdraw(address _toAddress, uint256 amount) public payable override onlyBigBankOwner {
+        // 调用父合约的withdraw函数
+        super.withdraw(_toAddress, amount);
+    }
 }
