@@ -59,7 +59,7 @@ contract BaseERC20 {
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
         // write your code here
-        require(balances[msg.sender] - _value > 0 , "ERC20: transfer amount exceeds balance");
+        require(balances[msg.sender] - _value >= 0 , "ERC20: transfer amount exceeds balance");
         balances[msg.sender] -= _value;
         balances[_to] += _value;
 
@@ -70,8 +70,8 @@ contract BaseERC20 {
 
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         // write your code here
-        require(allowances[msg.sender][_from] > _value , "ERC20: transfer amount exceeds balance");
-        require(balances[_from] > _value , "ERC20: transfer amount exceeds balance");
+        require(allowances[_from][msg.sender] >= _value , "ERC20: transfer amount exceeds allowance");
+        require(balances[_from] >= _value , "ERC20: transfer amount exceeds balance");
 
         allowances[msg.sender][_from] -= _value;
         balances[_from] -= _value;
@@ -83,10 +83,7 @@ contract BaseERC20 {
 
     function approve(address _spender, uint256 _value) public returns (bool success) {
         // write your code here
-        require(balances[msg.sender] > _value , "ERC20: transfer amount exceeds balance");
-        allowances[_spender][msg.sender] = _value;
-        
-        
+        allowances[msg.sender][_spender] = _value;
         emit Approval(msg.sender, _spender, _value); 
         return true; 
     }
@@ -94,6 +91,5 @@ contract BaseERC20 {
     function allowance(address _owner, address _spender) public view returns (uint256 remaining) {   
         // write your code here     
       return allowances[_owner][_spender];
-
     }
 }
