@@ -47,7 +47,7 @@ contract BaseERC20 {
         name = "BaseERC20";
         symbol = "BERC20";
         decimals = 18;
-        totalSupply = 100000000;
+        totalSupply = 100_000_000 * 1e18; // 1亿;
 
         balances[msg.sender] = totalSupply;  
     }
@@ -59,11 +59,9 @@ contract BaseERC20 {
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
         // write your code here
-        require(balances[msg.sender] - _value >= 0 , "ERC20: transfer amount exceeds balance");
+        require(balances[msg.sender] >= _value , "ERC20: transfer amount exceeds balance");
         balances[msg.sender] -= _value;
         balances[_to] += _value;
-
-
         emit Transfer(msg.sender, _to, _value);  
         return true;   
     }
@@ -72,8 +70,8 @@ contract BaseERC20 {
         // write your code here
         require(allowances[_from][msg.sender] >= _value , "ERC20: transfer amount exceeds allowance");
         require(balances[_from] >= _value , "ERC20: transfer amount exceeds balance");
-
-        allowances[msg.sender][_from] -= _value;
+        
+        allowances[_from][msg.sender] -= _value;
         balances[_from] -= _value;
         balances[_to] += _value;
 
@@ -87,7 +85,7 @@ contract BaseERC20 {
         emit Approval(msg.sender, _spender, _value); 
         return true; 
     }
-
+    
     function allowance(address _owner, address _spender) public view returns (uint256 remaining) {   
         // write your code here     
       return allowances[_owner][_spender];
