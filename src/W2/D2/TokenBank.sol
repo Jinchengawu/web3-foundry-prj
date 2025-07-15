@@ -1,5 +1,11 @@
 pragma solidity ^0.8.0;
 import { BaseERC20 } from "./MyERC20.sol";
+import "ERC20.sol";
+
+interface IERC20 is ERC20 {
+    function transfer(address to, uint256 amount) external returns (bool);
+}
+
 /**
 编写一个 TokenBank 合约，可以将自己的 Token 存入到 TokenBank， 和从 TokenBank 取出。
 
@@ -13,10 +19,11 @@ contract TokenBank {
     address public owner;
     mapping(address => uint256) public balances;
     uint256 public totalDeposit;
-    BaseERC20 public token;
+    IERC20 public token;
     
-    constructor() {
+    constructor(IERC20 _token) {
         owner = msg.sender;
+        token = _token;
     }
 
     function deposit() public payable {
