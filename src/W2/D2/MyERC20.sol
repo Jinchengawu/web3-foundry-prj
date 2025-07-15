@@ -28,9 +28,9 @@ onwer: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
  */
 
 contract BaseERC20 {
-    string public name; 
-    string public symbol; 
-    uint8 public decimals; 
+    string public immutable name; 
+    string public immutable symbol; 
+    uint8 public immutable decimals; 
 
     uint256 public totalSupply; 
 
