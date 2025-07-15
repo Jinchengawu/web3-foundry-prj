@@ -8,6 +8,7 @@ import { ERC20V2 } from "./ERC20_Plus.sol";
 
 
 contract TokenBankV2 is TokenBank {
+  // userAddress => tokenAddress => amount
     mapping(address => mapping(address => uint256)) public balances;
     address public owner;
 
@@ -18,7 +19,11 @@ contract TokenBankV2 is TokenBank {
     function deposit(uint256 amount) public override {
         super.deposit(amount);
     }
-    function tokensReceived() publice {
-
+    function tokensReceived(address from, uint256 amount, address token) public {
+        // 检查调用者是否为受信任的 token 合约
+        require(msg.sender == token, "Only token contract can call");
+        // 更新余额
+        balances[from][token] += amount;
+        // 可以加事件
     }
 }

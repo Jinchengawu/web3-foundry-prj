@@ -6,11 +6,14 @@ pragma solidity ^0.8.0;
  */
 import "ERC20.sol";
 
+interface IERC20V2 {
+    function tokensReceived(address from, uint256 amount) external;
+}
+
 contract ERC20V2 is ERC20 {
   
   function transferWithCallback(address to, uint256 amount) public returns (bool) {
-    require(isContract(to),"ERC20V2: to is not a contract");
-    super.transfer(to, amount);
+    require(super.transfer(to, amount), "Transfer failed");
     if (isContract(to)) {
       IERC20V2(to).tokensReceived(msg.sender, amount);
     }
@@ -18,7 +21,7 @@ contract ERC20V2 is ERC20 {
   }
 
   function isContract(address account) internal view returns (bool) {    
-    return extcodesize(account) > 0;
+    return account.code.length > 0;
   }
 
 }
