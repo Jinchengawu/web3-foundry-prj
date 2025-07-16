@@ -10,10 +10,10 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 你的任务是创建一个遵循 ERC721 标准的智能合约，该合约能够用于在以太坊区块链上铸造与交易 NFT。
 
  */
-contract BaseERC721 {
+contract BaseERC721 is ERC721URIStorage{ 
     using Strings for uint256;
     using Address for address;
-
+    uint256 private _nextTokenId = 1; // 计数器
     // Token name
     string private _name;
 
@@ -132,6 +132,7 @@ contract BaseERC721 {
         require(_owners[tokenId] == address(0), "ERC721: token already minted");
         _owners[tokenId] = to;
         _balances[to] += 1;
+        _nextTokenId++;
         /**code*/
 
         emit Transfer(address(0), to, tokenId);
@@ -142,6 +143,7 @@ contract BaseERC721 {
      */
     function balanceOf(address owner) public view returns (uint256) {
         /**code*/
+        return _balances[owner];
     }
 
     /**
@@ -149,6 +151,7 @@ contract BaseERC721 {
      */
     function ownerOf(uint256 tokenId) public view returns (address) {
         /**code*/
+        return _owners[tokenId];
     }
 
     /**
@@ -156,10 +159,10 @@ contract BaseERC721 {
      */
     function approve(address to, uint256 tokenId) public {
         address owner = ownerOf(tokenId);
-        require(/**code*/, "ERC721: approval to current owner");
+        require(owner != to, "ERC721: approval to current owner");
 
         require(
-            /**code*/,
+            owner != 0,
             "ERC721: approve caller is not owner nor approved for all"
         );
 
@@ -171,7 +174,7 @@ contract BaseERC721 {
      */
     function getApproved(uint256 tokenId) public view returns (address) {
         require(
-            /**code*/,
+            _exists(tokenId),
             "ERC721: approved query for nonexistent token"
         );
 
@@ -332,7 +335,7 @@ contract BaseERC721 {
      */
     function _approve(address to, uint256 tokenId) internal virtual {
         /**code*/
-
+        
         emit Approval(ownerOf(tokenId), to, tokenId);
     }
 

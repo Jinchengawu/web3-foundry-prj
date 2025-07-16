@@ -35,8 +35,8 @@ contract TokenBank {
 
     function withdraw(uint256 amount) public {
       require(balances[msg.sender] > amount, "No balance to withdraw");
-      payable(msg.sender).transfer(amount);
       balances[msg.sender] -= amount;
       totalDeposit -= amount;
+      payable(token).transfer(msg.sender,amount);
     }
 }
