@@ -70,7 +70,6 @@ contract BaseERC721 is ERC721URIStorage{
         string memory symbol_,
         string memory baseURI_
     ) {
-        /**code*/
         _name = name_;
         _symbol = symbol_;
         _baseURI = baseURI_;
@@ -90,7 +89,6 @@ contract BaseERC721 is ERC721URIStorage{
      * @dev See {IERC721Metadata-name}.
      */
     function name() public view returns (string memory) {
-        /**code*/
         return _name;
     }
 
@@ -98,7 +96,6 @@ contract BaseERC721 is ERC721URIStorage{
      * @dev See {IERC721Metadata-symbol}.
      */
     function symbol() public view returns (string memory) {
-        /**code*/
         return _symbol;
     }
 
@@ -107,12 +104,11 @@ contract BaseERC721 is ERC721URIStorage{
      */
     function tokenURI(uint256 tokenId) public view returns (string memory) {
         require(
-            /**code*/,
+            _exists(tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
 
         // should return baseURI
-        /**code*/
         return _baseURI;
     }
 
@@ -133,7 +129,7 @@ contract BaseERC721 is ERC721URIStorage{
         _owners[tokenId] = to;
         _balances[to] += 1;
         _nextTokenId++;
-        /**code*/
+        _approve(address(0), tokenId);
 
         emit Transfer(address(0), to, tokenId);
     }
@@ -142,7 +138,7 @@ contract BaseERC721 is ERC721URIStorage{
      * @dev See {IERC721-balanceOf}.
      */
     function balanceOf(address owner) public view returns (uint256) {
-        /**code*/
+        require(owner != address(0), "ERC721: balance query for the zero address");
         return _balances[owner];
     }
 
@@ -150,8 +146,9 @@ contract BaseERC721 is ERC721URIStorage{
      * @dev See {IERC721-ownerOf}.
      */
     function ownerOf(uint256 tokenId) public view returns (address) {
-        /**code*/
-        return _owners[tokenId];
+        address owner = _owners[tokenId];
+        require(owner != address(0), "ERC721: owner query for nonexistent token");
+        return owner;
     }
 
     /**
@@ -162,7 +159,7 @@ contract BaseERC721 is ERC721URIStorage{
         require(owner != to, "ERC721: approval to current owner");
 
         require(
-            owner != 0,
+            msg.sender == owner || isApprovedForAll(owner, msg.sender),
             "ERC721: approve caller is not owner nor approved for all"
         );
 
@@ -178,7 +175,7 @@ contract BaseERC721 is ERC721URIStorage{
             "ERC721: approved query for nonexistent token"
         );
 
-        /**code*/
+        return _tokenApprovals[tokenId];
     }
 
     /**
@@ -186,9 +183,9 @@ contract BaseERC721 is ERC721URIStorage{
      */
     function setApprovalForAll(address operator, bool approved) public {
         address sender = msg.sender;
-        require(/**code*/, "ERC721: approve to caller");
+        require(operator != sender, "ERC721: approve to caller");
         
-        /**code*/
+        _operatorApprovals[sender][operator] = approved;
 
         emit ApprovalForAll(sender, operator, approved);
     }
@@ -200,7 +197,7 @@ contract BaseERC721 is ERC721URIStorage{
         address owner,
         address operator
     ) public view returns (bool) {
-        /**code*/
+        return _operatorApprovals[owner][operator];
     }
 
     /**
@@ -282,7 +279,7 @@ contract BaseERC721 is ERC721URIStorage{
      * and stop existing when they are burned (`_burn`).
      */
     function _exists(uint256 tokenId) internal view returns (bool) {
-        /**code*/
+        return _owners[tokenId] != address(0);
     }
 
     /**
@@ -297,11 +294,12 @@ contract BaseERC721 is ERC721URIStorage{
         uint256 tokenId
     ) internal view returns (bool) {
         require(
-            /**code*/,
+            _exists(tokenId),
             "ERC721: operator query for nonexistent token"
         );
 
-        /**code*/
+        address owner = ownerOf(tokenId);
+        return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }
 
     /**
@@ -317,13 +315,18 @@ contract BaseERC721 is ERC721URIStorage{
      */
     function _transfer(address from, address to, uint256 tokenId) internal {
         require(
-           /**code*/,
+           ownerOf(tokenId) == from,
             "ERC721: transfer from incorrect owner"
         );
 
-        require(/**code*/, "ERC721: transfer to the zero address");
+        require(to != address(0), "ERC721: transfer to the zero address");
 
-        /**code*/
+        // Clear approvals from the previous owner
+        _approve(address(0), tokenId);
+
+        _balances[from] -= 1;
+        _balances[to] += 1;
+        _owners[tokenId] = to;
 
         emit Transfer(from, to, tokenId);
     }
@@ -334,7 +337,7 @@ contract BaseERC721 is ERC721URIStorage{
      * Emits a {Approval} event.
      */
     function _approve(address to, uint256 tokenId) internal virtual {
-        /**code*/
+        _tokenApprovals[tokenId] = to;
         
         emit Approval(ownerOf(tokenId), to, tokenId);
     }

@@ -22,17 +22,17 @@ interface MYERC20  is ERC721{
 contract NFTMarket {
   address public owner;
   mapping(address => uint256) public tokenIdToPrice;
-  MYERC20 public MyERC20;
+  MYERC20 public myERC20;
 
   constructor(MYERC20 memory _MyERC20) {
 
     owner = msg.sender;
-    MyERC20 = _MyERC20;
+    myERC20 = _MyERC20;
   }
   function list(address NFTAddress, uint256 tokenId, uint256 price ) public returns(bool){
     require(tokenIdToPrice[tokenId] == 0,"NFT is already listed");
     require(price > 0,"price is not enough");
-
+    myERC20.approve()
     tokenIdToPrice[tokenId] = price;
 
     return true;
@@ -41,7 +41,7 @@ contract NFTMarket {
     require(tokenIdToPrice[tokenId] != 0,"tokenId is not listed");
     require(price>=tokenIdToPrice[tokenId],"price is not enough");
     tokenIdToPrice[tokenId] = 0;
-    MyERC20.transferFrom(msg.sender, address(this), price);
+    myERC20.transferFrom(msg.sender, address(this), price);
     return true;
   }
 }
