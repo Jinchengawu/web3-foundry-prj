@@ -22,7 +22,7 @@ contract Caller {
 
     function delegateSetValue(address callee, uint256 _newValue) public {
         // delegatecall setValue()
-      (bool success) = Callee.delegatecall(abi.encodeWithSignature("setValue(uint256)",_newValue))
+      (bool success) = Callee.delegatecall(abi.encodeWithSignature("setValue(uint256)",_newValue));
       require(success,"delegate call failed");
     }
 }

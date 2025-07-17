@@ -26,7 +26,7 @@ contract Caller {
 contract Caller2 {
     function sendEther(address to, uint256 value) public returns (bool) {
         // 使用 call 发送 ether
-        this.call()
+        (bool success, ) = to.call{value: value}("");
         return success;
     }
 

@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 在转账时，如果目标地址是合约地址的话，调用目标地址的 tokensReceived() 方法。
 用户可以直接调用 transferWithCallback 将 扩展的 ERC20 Token 存入到 TokenBankV2 中。
  */
-import "ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 interface IERC20V2 {
     function tokensReceived(address from, uint256 amount) external;

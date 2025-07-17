@@ -8,15 +8,15 @@ pragma solidity ^0.8.0;
 设置 Token 小数位decimals：18
 设置 Token 总量（totalSupply）:100,000,000
 允许任何人查看任何地址的 Token 余额（balanceOf）
-允许 Token 的所有者将他们的 Token 发送给任何人（transfer）；转帐超出余额时抛出异常(require),并显示错误消息 “ERC20: transfer amount exceeds balance”。
+允许 Token 的所有者将他们的 Token 发送给任何人（transfer）；转帐超出余额时抛出异常(require),并显示错误消息 "ERC20: transfer amount exceeds balance"。
 允许 Token 的所有者批准某个地址消费他们的一部分Token（approve）
 允许任何人查看一个地址可以从其它账户中转账的代币数量（allowance）
 允许被授权的地址消费他们被授权的 Token 数量（transferFrom）；
-转帐超出余额时抛出异常(require)，异常信息：“ERC20: transfer amount exceeds balance”
-转帐超出授权数量时抛出异常(require)，异常消息：“ERC20: transfer amount exceeds allowance”。
+转帐超出余额时抛出异常(require)，异常信息："ERC20: transfer amount exceeds balance"
+转帐超出授权数量时抛出异常(require)，异常消息："ERC20: transfer amount exceeds allowance"。
 注意：
 在编写合约时，需要遵循 ERC20 标准，此外也需要考虑到安全性，确保转账和授权功能在任何时候都能正常运行无误。
-代码模板中已包含基础框架，只需要在标记为“Write your code here”的地方编写你的代码。不要去修改已有内容！
+代码模板中已包含基础框架，只需要在标记为"Write your code here"的地方编写你的代码。不要去修改已有内容！
 
 希望你能用一段优雅、高效和安全的代码，完成这个挑战。
 
@@ -28,8 +28,8 @@ onwer: 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
  */
 
 contract BaseERC20 {
-    string public immutable name; 
-    string public immutable symbol; 
+    string public name; 
+    string public symbol; 
     uint8 public immutable decimals; 
 
     uint256 public totalSupply; 
@@ -41,7 +41,7 @@ contract BaseERC20 {
     event Transfer(address indexed from, address indexed to, uint256 value);
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
-    constructor() public {
+    constructor() {
         // write your code here
         // set name,symbol,decimals,totalSupply
         name = "BaseERC20";

@@ -1,10 +1,8 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
-import { BaseERC20 } from "./MyERC20.sol";
-import "ERC20.sol";
 
-interface IERC20 is ERC20 {
-    function transfer(address to, uint256 amount) external returns (bool);
-}
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
 编写一个 TokenBank 合约，可以将自己的 Token 存入到 TokenBank， 和从 TokenBank 取出。
@@ -26,17 +24,17 @@ contract TokenBank {
         token = _token;
     }
 
-    function deposit() public payable {
-      require(msg.value > 0, "Deposit amount must be greater than 0");
-      balances[msg.sender] += msg.value;
-      token.transfer(address(this), msg.value);
-      totalDeposit += msg.value;
+    function deposit(uint256 amount) public {
+        require(amount > 0, "Deposit amount must be greater than 0");
+        require(token.transferFrom(msg.sender, address(this), amount), "Transfer failed");
+        balances[msg.sender] += amount;
+        totalDeposit += amount;
     }
 
     function withdraw(uint256 amount) public {
-      require(balances[msg.sender] > amount, "No balance to withdraw");
-      balances[msg.sender] -= amount;
-      totalDeposit -= amount;
-      payable(token).transfer(msg.sender,amount);
+        require(balances[msg.sender] >= amount, "Insufficient balance to withdraw");
+        balances[msg.sender] -= amount;
+        totalDeposit -= amount;
+        require(token.transfer(msg.sender, amount), "Transfer failed");
     }
 }

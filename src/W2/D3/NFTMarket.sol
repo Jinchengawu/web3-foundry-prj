@@ -13,7 +13,8 @@ buyNFT() : 普通的购买 NFT 功能，用户转入所定价的 token 数量，
 在 tokensReceived 中实现NFT 购买功能(注意扩展的转账需要添加一个额外数据参数)。
 
  */
-import "@openzeppelin/contracts/token/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 interface MYERC20  is ERC721{
 
@@ -32,7 +33,7 @@ contract NFTMarket {
   function list(address NFTAddress, uint256 tokenId, uint256 price ) public returns(bool){
     require(tokenIdToPrice[tokenId] == 0,"NFT is already listed");
     require(price > 0,"price is not enough");
-    myERC20.approve()
+    myERC20.approve(address(this), price);
     tokenIdToPrice[tokenId] = price;
 
     return true;
