@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {MyToken} from "../src/W2/D4/MyToken.sol";
+import {MyToken} from "../src/W2/D4/MyToken copy.sol";
 
 contract MyTokenScript is Script {
     MyToken public myToken;

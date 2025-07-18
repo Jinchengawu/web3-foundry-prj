@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {MyToken} from "../src/W2/D4/MyToken.sol";
+import {MyToken2} from "../src/W2/D4/MyToken2.sol";
 
 contract DeployMyToken is Script {
-    MyToken public counter;
+    MyToken2 public counter;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        counter = new MyToken('MyToken-WJK', 'MTK-WJK');
+        counter = new MyToken2();
 
         vm.stopBroadcast();
     }

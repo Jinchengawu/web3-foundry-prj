@@ -15,34 +15,39 @@ buyNFT() : 普通的购买 NFT 功能，用户转入所定价的 token 数量，
  */
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-interface MYERC20  is ERC721{
-
-}
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract NFTMarket {
-  address public owner;
-  mapping(address => uint256) public tokenIdToPrice;
-  MYERC20 public myERC20;
+    address public owner;
+    mapping(uint256 => uint256) public tokenIdToPrice;
+    IERC20 public paymentToken;
+    ERC721 public nftContract;
 
-  constructor(MYERC20 memory _MyERC20) {
-
-    owner = msg.sender;
-    myERC20 = _MyERC20;
-  }
-  function list(address NFTAddress, uint256 tokenId, uint256 price ) public returns(bool){
-    require(tokenIdToPrice[tokenId] == 0,"NFT is already listed");
-    require(price > 0,"price is not enough");
-    myERC20.approve(address(this), price);
-    tokenIdToPrice[tokenId] = price;
-
-    return true;
-  }
-  function buyNFT(address NFTAddress, uint256 tokenId, uint256 price ) public returns(bool){
-    require(tokenIdToPrice[tokenId] != 0,"tokenId is not listed");
-    require(price>=tokenIdToPrice[tokenId],"price is not enough");
-    tokenIdToPrice[tokenId] = 0;
-    myERC20.transferFrom(msg.sender, address(this), price);
-    return true;
-  }
+    constructor(IERC20 _paymentToken, ERC721 _nftContract) {
+        owner = msg.sender;
+        paymentToken = _paymentToken;
+        nftContract = _nftContract;
+    }
+    
+    function list(uint256 tokenId, uint256 price) public returns(bool) {
+        require(tokenIdToPrice[tokenId] == 0, "NFT is already listed");
+        require(price > 0, "price is not enough");
+        require(nftContract.ownerOf(tokenId) == msg.sender, "Not the owner of this NFT");
+        require(nftContract.isApprovedForAll(msg.sender, address(this)), "NFT not approved");
+        
+        tokenIdToPrice[tokenId] = price;
+        return true;
+    }
+    
+    function buyNFT(uint256 tokenId, uint256 price) public returns(bool) {
+        require(tokenIdToPrice[tokenId] != 0, "tokenId is not listed");
+        require(price >= tokenIdToPrice[tokenId], "price is not enough");
+        require(paymentToken.transferFrom(msg.sender, address(this), price), "Token transfer failed");
+        
+        address seller = nftContract.ownerOf(tokenId);
+        nftContract.transferFrom(seller, msg.sender, tokenId);
+        tokenIdToPrice[tokenId] = 0;
+        
+        return true;
+    }
 }
