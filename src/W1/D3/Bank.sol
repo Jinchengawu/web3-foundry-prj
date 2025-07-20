@@ -8,10 +8,10 @@ interface IBank {
 
 contract Bank is IBank {
   //  余额映射，用来存储用户跟存款
-    mapping(address => uint256) private balances;
-    address[3] private Top3Address;
-    address private owner;
-    address private contractAddress;
+    mapping(address => uint256) public balances;
+    address[3] public Top3Address;
+    address public owner;
+    address public contractAddress;
 
     constructor() {
       owner = msg.sender;
