@@ -42,10 +42,10 @@ contract NFTMarket {
     function buyNFT(uint256 tokenId, uint256 price) public returns(bool) {
         require(tokenIdToPrice[tokenId] != 0, "tokenId is not listed");
         require(price >= tokenIdToPrice[tokenId], "price is not enough");
-        require(paymentToken.transferFrom(msg.sender, address(this), price), "Token transfer failed");
+        require(paymentToken.safeTransferFrom(msg.sender, address(this), price), "Token transfer failed");
         
         address seller = nftContract.ownerOf(tokenId);
-        nftContract.transferFrom(seller, msg.sender, tokenId);
+        nftContract.safeTransferFrom(seller, msg.sender, tokenId);
         tokenIdToPrice[tokenId] = 0;
         
         return true;

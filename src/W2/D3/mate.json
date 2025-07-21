@@ -1,0 +1,10 @@
+{
+  "name": "YouCanYouUp!",
+  "description": "YouCanYouUp!",
+  "image": "ipfs://Qmf38z3wLUmBfoopMTnVDUhBNKck4fURWCNfPoVscZ3NLj",       
+  "animation_url": "ipfs://QmQ38z3wLUmBfoopMTnVDUhBNKck4fURWCNfPoVscZ3NLj",
+  "attributes": [
+    {"trait_type": "背景", "value": "姜文"},
+    {"trait_type": "稀有度", "value": "姜文"}
+  ]
+}
