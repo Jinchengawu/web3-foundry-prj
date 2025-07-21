@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 setValue 方法用于设置 value 值。要求：
 
 使用 delegatecall
-如果发送失败，抛出“delegate call failed”异常并回滚交易。
+如果发送失败，抛出"delegate call failed"异常并回滚交易。
 
 
  */
@@ -22,7 +22,7 @@ contract Caller {
 
     function delegateSetValue(address callee, uint256 _newValue) public {
         // delegatecall setValue()
-      (bool success) = Callee.delegatecall(abi.encodeWithSignature("setValue(uint256)",_newValue));
+      (bool success,) = callee.delegatecall(abi.encodeWithSignature("setValue(uint256)",_newValue));
       require(success,"delegate call failed");
     }
 }

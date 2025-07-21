@@ -24,7 +24,7 @@ contract TokenBank {
         token = _token;
     }
 
-    function deposit(uint256 amount) public {
+    function deposit(uint256 amount) public virtual {
         require(amount > 0, "Deposit amount must be greater than 0");
         require(token.transferFrom(msg.sender, address(this), amount), "Transfer failed");
         balances[msg.sender] += amount;
