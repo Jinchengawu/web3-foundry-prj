@@ -2,7 +2,7 @@
  * @Author: dreamworks.cnn@gmail.com
  * @Date: 2025-07-09 16:29:12
  * @LastEditors: dreamworks.cnn@gmail.com
- * @LastEditTime: 2025-07-21 16:58:13
+ * @LastEditTime: 2025-07-21 22:26:17
  * @FilePath: /web3-foundry-prj/README.md
  * @Description: 
  * 
@@ -85,8 +85,11 @@ cast call --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6
 cast send --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 "balances(address)" 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
 // 502要关闭本地代理
-
 forge script script/ERC20_Plus.s.sol:DeployMyToken --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 
 
 cast call --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 "balances(address)" 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
+
+cast send --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512 "balances(address)" 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
