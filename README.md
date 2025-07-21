@@ -2,7 +2,7 @@
  * @Author: dreamworks.cnn@gmail.com
  * @Date: 2025-07-09 16:29:12
  * @LastEditors: dreamworks.cnn@gmail.com
- * @LastEditTime: 2025-07-17 22:04:27
+ * @LastEditTime: 2025-07-21 16:58:13
  * @FilePath: /web3-foundry-prj/README.md
  * @Description: 
  * 
@@ -84,3 +84,7 @@ cast call --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6
 
 cast send --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9 "setNumber(uint256)" 233      
 
+// 502要关闭本地代理
+forge script script/ERC20_Plus.s.sol:DeployMyToken --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
+
+forge script script/ERC20_Plus.s.sol:DeployMyToken --rpc-url http://127.0.0.1:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
