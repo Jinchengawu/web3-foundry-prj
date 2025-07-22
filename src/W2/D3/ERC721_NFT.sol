@@ -326,6 +326,13 @@ contract BaseERC721 {
     }
 
     /**
+     * @dev Returns whether the target address is a contract.
+     */
+    function isContract(address account) internal view returns (bool) {
+        return account.code.length > 0;
+    }
+
+    /**
      * @dev Internal function to invoke {IERC721Receiver-onERC721Received} on a target address.
      * The call is not executed if the target address is not a contract.
      *
@@ -341,7 +348,7 @@ contract BaseERC721 {
         uint256 tokenId,
         bytes memory _data
     ) private returns (bool) {
-        if (to.isContract()) {
+        if (isContract(to)) {
             try
                 IERC721Receiver(to).onERC721Received(
                     msg.sender,

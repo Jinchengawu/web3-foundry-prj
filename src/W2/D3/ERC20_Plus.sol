@@ -14,10 +14,10 @@ contract ERC20V2 is ERC20 {
   
   constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
   
-  function transferWithCallback(address to, uint256 amount, bytes memory data) public returns (bool) {
+  function transferWithCallback(address to, uint256 amount) public returns (bool) {
     require(super.transfer(to, amount), "Transfer failed");
     if (isContract(to)) {
-      IERC20V2(to).tokensReceived(msg.sender, amount, data);
+      IERC20V2(to).tokensReceived(msg.sender, amount);
     }
     return true;
   }
