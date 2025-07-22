@@ -136,11 +136,11 @@ contract NFTMarket  is ITokenReceiver{
         // 将上架信息标记为非活跃
         listing.isActive = false;
         // 处理NFT转移（卖家 -> 买家）
-        IERC721(listing.nftContract).transferFrom(listing.seller, msg.sender, listing.tokenId);
+        IERC721(listing.nftContract).transferFrom(listing.seller, from, listing.tokenId);
         // 处理代币转账（买家 -> 卖家）
         bool success = paymentToken.transfer(listing.seller, amount);
         require(success, "NFTMarket: token transfer to seller failed");
-        emit NFTSold(listingId, msg.sender, listing.seller, listing.nftContract, listing.tokenId, listing.price);
+        emit NFTSold(listingId, from, listing.seller, listing.nftContract, listing.tokenId, listing.price);
         return true;
     }
 

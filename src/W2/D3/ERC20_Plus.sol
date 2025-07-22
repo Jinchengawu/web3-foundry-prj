@@ -7,17 +7,29 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 interface IERC20V2 {
-    function tokensReceived(address from, uint256 amount) external;
+    function tokensReceived(address from, uint256 amount, bytes calldata data) external returns (bool);
 }
 
 contract ERC20V2 is ERC20 {
   
   constructor(string memory name, string memory symbol) ERC20(name, symbol) {}
   
+  function mint(address to, uint256 amount) public {
+    _mint(to, amount);
+  }
+  
   function transferWithCallback(address to, uint256 amount) public returns (bool) {
     require(super.transfer(to, amount), "Transfer failed");
     if (isContract(to)) {
-      IERC20V2(to).tokensReceived(msg.sender, amount);
+      IERC20V2(to).tokensReceived(msg.sender, amount, "");
+    }
+    return true;
+  }
+
+  function transferWithCallbackAndData(address to, uint256 amount, bytes calldata data) public returns (bool) {
+    require(super.transfer(to, amount), "Transfer failed");
+    if (isContract(to)) {
+      IERC20V2(to).tokensReceived(msg.sender, amount, data);
     }
     return true;
   }
