@@ -1,0 +1,654 @@
+No files changed, compilation skipped
+
+Ran 17 tests for test/NFTMarket.t.sol:NFTMarketTest
+[PASS] testFuzz_RandomPriceListingAndBuying(uint256) (runs: 256, μ: 430860, ~: 430979)
+Traces:
+  [445355] NFTMarketTest::testFuzz_RandomPriceListingAndBuying(9290887207856990530401618970091487429982914367746956741483327638 [9.29e63])
+    ├─ [0] console::log("Bound result", 1807389915203233683936 [1.807e21]) [staticcall]
+    │   └─ ← [Stop]
+    ├─ [51607] ERC20V2::mint(ECAdd: [0x0000000000000000000000000000000000000006], 1000000000000000000000000 [1e24])
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: ECAdd: [0x0000000000000000000000000000000000000006], value: 1000000000000000000000000 [1e24])
+    │   └─ ← [Stop]
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169190] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 1807389915203233683936 [1.807e21])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 1807389915203233683936 [1.807e21])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46964] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 1807389915203233683936 [1.807e21])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 1807389915203233683936 [1.807e21])
+    │   └─ ← [Return] true
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [95911] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(SHA-256: [0x0000000000000000000000000000000000000002], ECRecover: [0x0000000000000000000000000000000000000001], 1807389915203233683936 [1.807e21])
+    │   │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 1807389915203233683936 [1.807e21])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 1807389915203233683936 [1.807e21])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 998192610084796766316064 [9.981e23]
+    ├─ [0] VM::assertEq(998192610084796766316064 [9.981e23], 998192610084796766316064 [9.981e23]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1001807389915203233683936 [1.001e24]
+    ├─ [0] VM::assertEq(1001807389915203233683936 [1.001e24], 1001807389915203233683936 [1.001e24]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   └─ ← [Return] SHA-256: [0x0000000000000000000000000000000000000002]
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_Fail_AlreadySold() (gas: 399046)
+Traces:
+  [413446] NFTMarketTest::test_BuyNFT_Fail_AlreadySold()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [95911] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(SHA-256: [0x0000000000000000000000000000000000000002], ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: RIPEMD-160: [0x0000000000000000000000000000000000000003], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:   NFTMarket: listing is not active)
+    │   └─ ← [Return]
+    ├─ [26264] NFTMarket::buy(0)
+    │   └─ ← [Revert] NFTMarket: listing is not active
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_Fail_BuyOwnNFT() (gas: 296266)
+Traces:
+  [311466] NFTMarketTest::test_BuyNFT_Fail_BuyOwnNFT()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: ECRecover: [0x0000000000000000000000000000000000000001], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [65611] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [12536] ERC20V2::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [14340] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: ECRecover: [0x0000000000000000000000000000000000000001], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: ECRecover: [0x0000000000000000000000000000000000000001], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    ├─ [0] VM::assertEq(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_Fail_InsufficientBalance() (gas: 326356)
+Traces:
+  [326356] NFTMarketTest::test_BuyNFT_Fail_InsufficientBalance()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [51607] ERC20V2::mint(ModExp: [0x0000000000000000000000000000000000000005], 50000000000000000000 [5e19])
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: ModExp: [0x0000000000000000000000000000000000000005], value: 50000000000000000000 [5e19])
+    │   └─ ← [Stop]
+    ├─ [0] VM::startPrank(ModExp: [0x0000000000000000000000000000000000000005])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: ModExp: [0x0000000000000000000000000000000000000005], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  #NFTMarket: not enough payment token)
+    │   └─ ← [Return]
+    ├─ [36584] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(ModExp: [0x0000000000000000000000000000000000000005]) [staticcall]
+    │   │   └─ ← [Return] 50000000000000000000 [5e19]
+    │   └─ ← [Revert] NFTMarket: not enough payment token
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_Fail_InvalidListingId() (gas: 88501)
+Traces:
+  [88501] NFTMarketTest::test_BuyNFT_Fail_InvalidListingId()
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  $NFTMarket: listing id does not exist)
+    │   └─ ← [Return]
+    ├─ [24148] NFTMarket::buy(999)
+    │   └─ ← [Revert] NFTMarket: listing id does not exist
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_Success() (gas: 404188)
+Traces:
+  [418588] NFTMarketTest::test_BuyNFT_Success()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [0] VM::expectEmit(true, true, true, true)
+    │   └─ ← [Return]
+    ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    ├─ [95911] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(SHA-256: [0x0000000000000000000000000000000000000002], ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 999900000000000000000000 [9.999e23]
+    ├─ [0] VM::assertEq(999900000000000000000000 [9.999e23], 999900000000000000000000 [9.999e23]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1000100000000000000000000 [1e24]
+    ├─ [0] VM::assertEq(1000100000000000000000000 [1e24], 1000100000000000000000000 [1e24]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   └─ ← [Return] SHA-256: [0x0000000000000000000000000000000000000002]
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [11884] NFTMarket::listings(0) [staticcall]
+    │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001], BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20], false
+    ├─ [0] VM::assertFalse(false) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_BuyNFT_WithTransferCallback() (gas: 321368)
+Traces:
+  [347306] NFTMarketTest::test_BuyNFT_WithTransferCallback()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    ├─ [103756] ERC20V2::transferWithCallbackAndData(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20], 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   ├─ [73012] NFTMarket::tokensReceived(SHA-256: [0x0000000000000000000000000000000000000002], 100000000000000000000 [1e20], 0x0000000000000000000000000000000000000000000000000000000000000000)
+    │   │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   │   └─ ← [Stop]
+    │   │   ├─ [8667] ERC20V2::transfer(ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   │   ├─ emit Transfer(from: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   │   └─ ← [Return] true
+    │   │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   └─ ← [Return] true
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return] 999900000000000000000000 [9.999e23]
+    ├─ [0] VM::assertEq(999900000000000000000000 [9.999e23], 999900000000000000000000 [9.999e23]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return] 1000100000000000000000000 [1e24]
+    ├─ [0] VM::assertEq(1000100000000000000000000 [1e24], 1000100000000000000000000 [1e24]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   └─ ← [Return] SHA-256: [0x0000000000000000000000000000000000000002]
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_CancelListing() (gas: 225642)
+Traces:
+  [230442] NFTMarketTest::test_CancelListing()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectEmit(true, false, false, false)
+    │   └─ ← [Return]
+    ├─ emit NFTListingCancelled(listingId: 0)
+    ├─ [27585] NFTMarket::cancelListing(0)
+    │   ├─ emit NFTListingCancelled(listingId: 0)
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [11884] NFTMarket::listings(0) [staticcall]
+    │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001], BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20], false
+    ├─ [0] VM::assertFalse(false) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_CancelListing_Fail_NotSeller() (gas: 215217)
+Traces:
+  [215217] NFTMarketTest::test_CancelListing_Fail_NotSeller()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  NFTMarket: caller is not seller)
+    │   └─ ← [Return]
+    ├─ [28439] NFTMarket::cancelListing(0)
+    │   └─ ← [Revert] NFTMarket: caller is not seller
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Fail_AlreadyListed() (gas: 215900)
+Traces:
+  [215900] NFTMarketTest::test_ListNFT_Fail_AlreadyListed()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:   NFTMarket: nft is already listed)
+    │   └─ ← [Return]
+    ├─ [31793] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   └─ ← [Revert] NFTMarket: nft is already listed
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Fail_NotApproved() (gas: 76656)
+Traces:
+  [81456] NFTMarketTest::test_ListNFT_Fail_NotApproved()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [24657] BaseERC721::setApprovalForAll(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], false)
+    │   ├─ emit ApprovalForAll(owner: ECRecover: [0x0000000000000000000000000000000000000001], operator: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], approved: false)
+    │   └─ ← [Stop]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  6NFTMarket: market is not approved to transfer this NFT)
+    │   └─ ← [Return]
+    ├─ [39322] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] false
+    │   ├─ [3210] BaseERC721::getApproved(1) [staticcall]
+    │   │   └─ ← [Return] 0x0000000000000000000000000000000000000000
+    │   └─ ← [Revert] NFTMarket: market is not approved to transfer this NFT
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Fail_NotOwner() (gas: 45292)
+Traces:
+  [45292] NFTMarketTest::test_ListNFT_Fail_NotOwner()
+    ├─ [0] VM::startPrank(Identity: [0x0000000000000000000000000000000000000004])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  "NFTMarket: caller is not the owner)
+    │   └─ ← [Return]
+    ├─ [31266] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   └─ ← [Revert] NFTMarket: caller is not the owner
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Fail_ZeroNFTContract() (gas: 34594)
+Traces:
+  [34594] NFTMarketTest::test_ListNFT_Fail_ZeroNFTContract()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  .NFTMarket: nft contract address cannot be zero)
+    │   └─ ← [Return]
+    ├─ [22726] NFTMarket::list(0x0000000000000000000000000000000000000000, 1, 100000000000000000000 [1e20])
+    │   └─ ← [Revert] NFTMarket: nft contract address cannot be zero
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Fail_ZeroPrice() (gas: 36894)
+Traces:
+  [36894] NFTMarketTest::test_ListNFT_Fail_ZeroPrice()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectRevert(custom error 0xf28dceb3:  *NFTMarket: price must be greater than zero)
+    │   └─ ← [Return]
+    ├─ [22848] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 0)
+    │   └─ ← [Revert] NFTMarket: price must be greater than zero
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_ListNFT_Success() (gas: 209829)
+Traces:
+  [209829] NFTMarketTest::test_ListNFT_Success()
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [0] VM::expectEmit(true, true, true, true)
+    │   └─ ← [Return]
+    ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [11884] NFTMarket::listings(0) [staticcall]
+    │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001], BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20], true
+    ├─ [0] VM::assertEq(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [0] VM::assertEq(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [0] VM::assertEq(1, 1) [staticcall]
+    │   └─ ← [Return]
+    ├─ [0] VM::assertEq(100000000000000000000 [1e20], 100000000000000000000 [1e20]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [0] VM::assertTrue(true) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_MultipleNFTs_ListingAndBuying() (gas: 933875)
+Traces:
+  [953075] NFTMarketTest::test_MultipleNFTs_ListingAndBuying()
+    ├─ [51820] BaseERC721::mint(ECRecover: [0x0000000000000000000000000000000000000001], 2)
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: ECRecover: [0x0000000000000000000000000000000000000001], tokenId: 2)
+    │   └─ ← [Stop]
+    ├─ [51820] BaseERC721::mint(ECRecover: [0x0000000000000000000000000000000000000001], 3)
+    │   ├─ emit Transfer(from: 0x0000000000000000000000000000000000000000, to: ECRecover: [0x0000000000000000000000000000000000000001], tokenId: 3)
+    │   └─ ← [Stop]
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [156710] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 2, 200000000000000000000 [2e20])
+    │   ├─ [2921] BaseERC721::ownerOf(2) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 1, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 2, price: 200000000000000000000 [2e20])
+    │   └─ ← [Stop]
+    ├─ [161354] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 3, 300000000000000000000 [3e20])
+    │   ├─ [2921] BaseERC721::ownerOf(3) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 2, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 3, price: 300000000000000000000 [3e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [100711] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(SHA-256: [0x0000000000000000000000000000000000000002], ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(RIPEMD-160: [0x0000000000000000000000000000000000000003])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 200000000000000000000 [2e20])
+    │   ├─ emit Approval(owner: RIPEMD-160: [0x0000000000000000000000000000000000000003], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 200000000000000000000 [2e20])
+    │   └─ ← [Return] true
+    ├─ [100723] NFTMarket::buy(1)
+    │   ├─ [2850] ERC20V2::balanceOf(RIPEMD-160: [0x0000000000000000000000000000000000000003]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(RIPEMD-160: [0x0000000000000000000000000000000000000003], ECRecover: [0x0000000000000000000000000000000000000001], 200000000000000000000 [2e20])
+    │   │   ├─ emit Transfer(from: RIPEMD-160: [0x0000000000000000000000000000000000000003], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 200000000000000000000 [2e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], RIPEMD-160: [0x0000000000000000000000000000000000000003], 2)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: RIPEMD-160: [0x0000000000000000000000000000000000000003], tokenId: 2)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 1, buyer: RIPEMD-160: [0x0000000000000000000000000000000000000003], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 2, price: 200000000000000000000 [2e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   └─ ← [Return] SHA-256: [0x0000000000000000000000000000000000000002]
+    ├─ [0] VM::assertEq(SHA-256: [0x0000000000000000000000000000000000000002], SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(2) [staticcall]
+    │   └─ ← [Return] RIPEMD-160: [0x0000000000000000000000000000000000000003]
+    ├─ [0] VM::assertEq(RIPEMD-160: [0x0000000000000000000000000000000000000003], RIPEMD-160: [0x0000000000000000000000000000000000000003]) [staticcall]
+    │   └─ ← [Return]
+    ├─ [2921] BaseERC721::ownerOf(3) [staticcall]
+    │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    ├─ [0] VM::assertEq(ECRecover: [0x0000000000000000000000000000000000000001], ECRecover: [0x0000000000000000000000000000000000000001]) [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+[PASS] test_NFTMarket_NoTokenBalance() (gas: 336603)
+Traces:
+  [351003] NFTMarketTest::test_NFTMarket_NoTokenBalance()
+    ├─ [2850] ERC20V2::balanceOf(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   └─ ← [Return] 0
+    ├─ [0] VM::assertEq(0, 0, "NFTMarket should have no initial token balance") [staticcall]
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(ECRecover: [0x0000000000000000000000000000000000000001])
+    │   └─ ← [Return]
+    ├─ [169166] NFTMarket::list(BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], 1, 100000000000000000000 [1e20])
+    │   ├─ [2921] BaseERC721::ownerOf(1) [staticcall]
+    │   │   └─ ← [Return] ECRecover: [0x0000000000000000000000000000000000000001]
+    │   ├─ [3264] BaseERC721::isApprovedForAll(ECRecover: [0x0000000000000000000000000000000000000001], NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   │   └─ ← [Return] true
+    │   ├─ emit NFTListed(listingId: 0, seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [0] VM::startPrank(SHA-256: [0x0000000000000000000000000000000000000002])
+    │   └─ ← [Return]
+    ├─ [46940] ERC20V2::approve(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], 100000000000000000000 [1e20])
+    │   ├─ emit Approval(owner: SHA-256: [0x0000000000000000000000000000000000000002], spender: NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a], value: 100000000000000000000 [1e20])
+    │   └─ ← [Return] true
+    ├─ [95911] NFTMarket::buy(0)
+    │   ├─ [2850] ERC20V2::balanceOf(SHA-256: [0x0000000000000000000000000000000000000002]) [staticcall]
+    │   │   └─ ← [Return] 1000000000000000000000000 [1e24]
+    │   ├─ [17336] ERC20V2::transferFrom(SHA-256: [0x0000000000000000000000000000000000000002], ECRecover: [0x0000000000000000000000000000000000000001], 100000000000000000000 [1e20])
+    │   │   ├─ emit Transfer(from: SHA-256: [0x0000000000000000000000000000000000000002], to: ECRecover: [0x0000000000000000000000000000000000000001], value: 100000000000000000000 [1e20])
+    │   │   └─ ← [Return] true
+    │   ├─ [39040] BaseERC721::transferFrom(ECRecover: [0x0000000000000000000000000000000000000001], SHA-256: [0x0000000000000000000000000000000000000002], 1)
+    │   │   ├─ emit Transfer(from: ECRecover: [0x0000000000000000000000000000000000000001], to: SHA-256: [0x0000000000000000000000000000000000000002], tokenId: 1)
+    │   │   └─ ← [Stop]
+    │   ├─ emit NFTSold(listingId: 0, buyer: SHA-256: [0x0000000000000000000000000000000000000002], seller: ECRecover: [0x0000000000000000000000000000000000000001], nftContract: BaseERC721: [0x2e234DAe75C793f67A35089C9d99245E1C58470b], tokenId: 1, price: 100000000000000000000 [1e20])
+    │   └─ ← [Stop]
+    ├─ [0] VM::stopPrank()
+    │   └─ ← [Return]
+    ├─ [2850] ERC20V2::balanceOf(NFTMarket: [0xF62849F9A0B5Bf2913b396098F7c7019b51A820a]) [staticcall]
+    │   └─ ← [Return] 0
+    ├─ [0] VM::assertEq(0, 0, "NFTMarket should have no token balance after transaction") [staticcall]
+    │   └─ ← [Return]
+    └─ ← [Stop]
+
+Suite result: ok. 17 passed; 0 failed; 0 skipped; finished in 52.57ms (60.35ms CPU time)
+
+╭-------------------------------------------+-----------------+--------+--------+--------+---------╮
+| src/W2/D3/ERC20_Plus.sol:ERC20V2 Contract |                 |        |        |        |         |
++==================================================================================================+
+| Deployment Cost                           | Deployment Size |        |        |        |         |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| 1191494                                   | 6453            |        |        |        |         |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+|                                           |                 |        |        |        |         |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| Function Name                             | Min             | Avg    | Median | Max    | # Calls |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| approve                                   | 46916           | 46967  | 46976  | 46976  | 265     |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| balanceOf                                 | 2850            | 2850   | 2850   | 2850   | 1297    |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| mint                                      | 51607           | 52550  | 51607  | 68707  | 308     |
+|-------------------------------------------+-----------------+--------+--------+--------+---------|
+| transferWithCallbackAndData               | 103756          | 103756 | 103756 | 103756 | 1       |
+╰-------------------------------------------+-----------------+--------+--------+--------+---------╯
+
+╭----------------------------------------------+-----------------+-------+--------+-------+---------╮
+| src/W2/D3/ERC721_NFT.sol:BaseERC721 Contract |                 |       |        |       |         |
++===================================================================================================+
+| Deployment Cost                              | Deployment Size |       |        |       |         |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| 2168498                                      | 11040           |       |        |       |         |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+|                                              |                 |       |        |       |         |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| Function Name                                | Min             | Avg   | Median | Max   | # Calls |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| getApproved                                  | 3210            | 3210  | 3210   | 3210  | 1       |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| isApprovedForAll                             | 3264            | 3264  | 3264   | 3264  | 270     |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| mint                                         | 51820           | 67120 | 68920  | 68920 | 19      |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| ownerOf                                      | 2921            | 2921  | 2921   | 2921  | 533     |
+|----------------------------------------------+-----------------+-------+--------+-------+---------|
+| setApprovalForAll                            | 24657           | 45351 | 46569  | 46569 | 18      |
+╰----------------------------------------------+-----------------+-------+--------+-------+---------╯
+
+╭--------------------------------------------+-----------------+--------+--------+--------+---------╮
+| src/W2/D3/NFTMarket.sol:NFTMarket Contract |                 |        |        |        |         |
++===================================================================================================+
+| Deployment Cost                            | Deployment Size |        |        |        |         |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| 1679600                                    | 7986            |        |        |        |         |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+|                                            |                 |        |        |        |         |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| Function Name                              | Min             | Avg    | Median | Max    | # Calls |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| buy                                        | 24148           | 95075  | 95911  | 100723 | 265     |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| cancelListing                              | 27585           | 28012  | 28012  | 28439  | 2       |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| list                                       | 22726           | 166572 | 169202 | 169202 | 274     |
+|--------------------------------------------+-----------------+--------+--------+--------+---------|
+| listings                                   | 11884           | 11884  | 11884  | 11884  | 3       |
+╰--------------------------------------------+-----------------+--------+--------+--------+---------╯
+
+
+Ran 1 test suite in 83.39ms (52.57ms CPU time): 17 tests passed, 0 failed, 0 skipped (17 total tests)
