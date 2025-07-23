@@ -26,4 +26,10 @@ contract TokenBankV2 is TokenBank {
         userTokenBalances[from][token] += amount;
         // 可以加事件
     }
+
+    // 添加setOwner函数，允许SafeBank设置Bank合约的所有者
+    function setOwner(address newOwner) public {
+        require(msg.sender == owner || msg.sender == tokenBankOwner, "Only owner can set new owner");
+        owner = newOwner;
+    }
 }
