@@ -1,1 +1,1 @@
-testPermitDeposit|testPermitDepositInvalidSigner
+testPermitDepositStillRequiresApprove
