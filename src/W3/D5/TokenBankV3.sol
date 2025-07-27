@@ -26,6 +26,8 @@ contract TokenBankV3 is TokenBankV2 {
     error PermitDepositInvalidAmount(uint256 amount);
     error Permit2InvalidToken(address token);
     error Permit2InvalidValue(uint256 value);
+    error InsufficientTokenBalance(address owner, uint256 balance, uint256 amount);
+    error InsufficientAllowance(address owner, uint256 allowance, uint256 amount);
     
     // 事件定义
     event PermitDeposit(address indexed owner, uint256 amount, uint256 deadline);
@@ -50,48 +52,20 @@ contract TokenBankV3 is TokenBankV2 {
         bytes32 r, 
         bytes32 s
     ) public {
-        // 检查金额是否有效
-        if (amount == 0) {
-            revert PermitDepositInvalidAmount(amount);
-        }
+        // 验证基本参数
+        _validateDepositParams(owner, amount, deadline);
         
-        // 检查签名是否过期
-        if (block.timestamp > deadline) {
-            revert PermitDepositExpiredSignature(deadline);
-        }
+        // 验证 TokenBankV3 的 permitDeposit 签名
+        _verifyPermitDepositSignature(owner, amount, deadline, v, r, s);
         
-        // 构建结构体哈希
-        bytes32 structHash = keccak256(
-            abi.encode(PERMIT_TYPEHASH, owner, amount, deadline)
-        );
-        
-        // 构建完整的 EIP-712 哈希
-        bytes32 hash = keccak256(abi.encodePacked(
-            "\x19\x01",
-            DOMAIN_SEPARATOR(),
-            structHash
-        ));
-        
-        // 从签名中恢复签名者地址
-        address signer = ecrecover(hash, v, r, s);
-        
-        // 验证签名者是否为 owner
-        if (signer != owner) {
-            revert PermitDepositInvalidSigner(signer, owner);
+        // 检查 allowance 是否足够
+        uint256 allowance = IERC20(address(token)).allowance(owner, address(this));
+        if (allowance < amount) {
+            revert InsufficientAllowance(owner, allowance, amount);
         }
         
         // 执行存款操作
-        TokenV3 tokenContract = TokenV3(address(token));
-        require(tokenContract.transferFrom(owner, address(this), amount), "Transfer failed");
-        
-        // 更新余额
-        balances[owner] += amount;
-        totalDeposit += amount;
-        
-        // 如果继承自 TokenBankV2，也更新 userTokenBalances
-        if (address(token) != address(0)) {
-            userTokenBalances[owner][address(token)] += amount;
-        }
+        _executeDeposit(owner, address(token), amount);
         
         // 发出事件
         emit PermitDeposit(owner, amount, deadline);
@@ -116,32 +90,17 @@ contract TokenBankV3 is TokenBankV2 {
         bytes32 r, 
         bytes32 s
     ) public {
-        // 检查金额是否有效
-        if (amount == 0) {
-            revert PermitDepositInvalidAmount(amount);
-        }
+        // 验证基本参数
+        _validateDepositParams(owner, amount, deadline);
         
-        // 检查签名是否过期
-        if (block.timestamp > deadline) {
-            revert PermitDepositExpiredSignature(deadline);
-        }
-        
-        // 1. 首先验证并执行 TokenV3 的 permit
+        // 验证并执行 TokenV3 的 permit
         TokenV3 tokenContract = TokenV3(address(token));
         tokenContract.permit(owner, address(this), amount, deadline, v, r, s);
         
-        // 2. 执行转账
-        require(tokenContract.transferFrom(owner, address(this), amount), "Transfer failed");
+        // 执行存款操作
+        _executeDeposit(owner, address(token), amount);
         
-        // 3. 更新余额
-        balances[owner] += amount;
-        totalDeposit += amount;
-        
-        if (address(token) != address(0)) {
-            userTokenBalances[owner][address(token)] += amount;
-        }
-        
-        // 4. 发出事件
+        // 发出事件
         emit PermitDeposit(owner, amount, deadline);
     }
     
@@ -165,20 +124,8 @@ contract TokenBankV3 is TokenBankV2 {
         bytes32 r,
         bytes32 s
     ) public {
-        // 检查代币地址是否有效
-        if (tokenAddress == address(0)) {
-            revert Permit2InvalidToken(tokenAddress);
-        }
-        
-        // 检查金额是否有效
-        if (amount == 0) {
-            revert Permit2InvalidValue(amount);
-        }
-        
-        // 检查签名是否过期
-        if (block.timestamp > deadline) {
-            revert PermitDepositExpiredSignature(deadline);
-        }
+        // 验证基本参数（包括代币地址）
+        _validatePermit2Params(owner, tokenAddress, amount, deadline);
         
         // 尝试通过 permit 获取授权（如果代币支持）
         try this.tryPermit(tokenAddress, owner, address(this), amount, deadline, v, r, s) {
@@ -188,15 +135,8 @@ contract TokenBankV3 is TokenBankV2 {
             // 这里我们继续执行，如果用户没有 approve 会失败
         }
         
-        // 执行转账
-        require(IERC20(tokenAddress).transferFrom(owner, address(this), amount), "Transfer failed");
-        
-        // 更新余额
-        balances[owner] += amount;
-        totalDeposit += amount;
-        
-        // 更新 userTokenBalances
-        userTokenBalances[owner][tokenAddress] += amount;
+        // 执行存款操作
+        _executeDeposit(owner, tokenAddress, amount);
         
         // 发出事件
         emit DepositWithPermit2(owner, tokenAddress, amount, deadline);
@@ -261,5 +201,120 @@ contract TokenBankV3 is TokenBankV2 {
      */
     function deposit(uint256 amount) public override {
         super.deposit(amount);
+    }
+    
+    /**
+     * @dev 验证存款基本参数
+     * @param amount 存款金额
+     * @param deadline 过期时间
+     */
+    function _validateDepositParams(
+        address /* owner */,
+        uint256 amount,
+        uint256 deadline
+    ) internal view {
+        // 检查金额是否有效
+        if (amount == 0) {
+            revert PermitDepositInvalidAmount(amount);
+        }
+        
+        // 检查签名是否过期
+        if (block.timestamp > deadline) {
+            revert PermitDepositExpiredSignature(deadline);
+        }
+    }
+    
+    /**
+     * @dev 验证 Permit2 参数
+     * @param tokenAddress 代币地址
+     * @param amount 存款金额
+     * @param deadline 过期时间
+     */
+    function _validatePermit2Params(
+        address /* owner */,
+        address tokenAddress,
+        uint256 amount,
+        uint256 deadline
+    ) internal view {
+        // 检查代币地址是否有效
+        if (tokenAddress == address(0)) {
+            revert Permit2InvalidToken(tokenAddress);
+        }
+        
+        // 检查金额是否有效
+        if (amount == 0) {
+            revert Permit2InvalidValue(amount);
+        }
+        
+        // 检查签名是否过期
+        if (block.timestamp > deadline) {
+            revert PermitDepositExpiredSignature(deadline);
+        }
+    }
+    
+    /**
+     * @dev 验证 permitDeposit 签名
+     * @param owner 用户地址
+     * @param amount 存款金额
+     * @param deadline 过期时间
+     * @param v 签名 v 值
+     * @param r 签名 r 值
+     * @param s 签名 s 值
+     */
+    function _verifyPermitDepositSignature(
+        address owner,
+        uint256 amount,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) internal view {
+        // 构建结构体哈希
+        bytes32 structHash = keccak256(
+            abi.encode(PERMIT_TYPEHASH, owner, amount, deadline)
+        );
+        
+        // 构建完整的 EIP-712 哈希
+        bytes32 hash = keccak256(abi.encodePacked(
+            "\x19\x01",
+            DOMAIN_SEPARATOR(),
+            structHash
+        ));
+        
+        // 从签名中恢复签名者地址
+        address signer = ecrecover(hash, v, r, s);
+        
+        // 验证签名者是否为 owner
+        if (signer != owner) {
+            revert PermitDepositInvalidSigner(signer, owner);
+        }
+    }
+    
+    /**
+     * @dev 执行存款操作
+     * @param owner 用户地址
+     * @param tokenAddress 代币地址
+     * @param amount 存款金额
+     */
+    function _executeDeposit(
+        address owner,
+        address tokenAddress,
+        uint256 amount
+    ) internal {
+        // 检查用户余额是否足够
+        uint256 userBalance = IERC20(tokenAddress).balanceOf(owner);
+        if (userBalance < amount) {
+            revert InsufficientTokenBalance(owner, userBalance, amount);
+        }
+        
+        // 执行转账
+        require(IERC20(tokenAddress).transferFrom(owner, address(this), amount), "Transfer failed");
+        
+        // 更新余额
+        balances[owner] += amount;
+        totalDeposit += amount;
+        
+        // 更新 userTokenBalances
+        userTokenBalances[owner][tokenAddress] += amount;
     }
 }
