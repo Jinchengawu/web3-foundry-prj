@@ -337,11 +337,11 @@ contract SafeBank is TokenBankV2 {
     }
 
     // 重写TokenBankV2的deposit和withdraw函数，使其与SafeBank集成
-    function deposit(uint256 amount) public override {
+    function deposit(uint256 amount) public virtual override {
         super.deposit(amount);
     }
 
-    function withdraw(uint256 amount) public override {
+    function withdraw(uint256 amount) public virtual override {
         super.withdraw(amount);
     }
 }

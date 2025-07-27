@@ -31,7 +31,7 @@ contract TokenBank {
         totalDeposit += amount;
     }
 
-    function withdraw(uint256 amount) public {
+    function withdraw(uint256 amount) public virtual{
         require(balances[msg.sender] >= amount, "Insufficient balance to withdraw");
         balances[msg.sender] -= amount;
         totalDeposit -= amount;

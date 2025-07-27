@@ -15,7 +15,7 @@ contract TokenBankV2 is TokenBank {
         tokenBankOwner = msg.sender;
     }
 
-    function deposit(uint256 amount) public override {
+    function deposit(uint256 amount) public override virtual {
         super.deposit(amount);
     }
     
