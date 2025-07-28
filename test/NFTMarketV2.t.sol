@@ -112,14 +112,18 @@ contract NFTMarketV2Test is Test {
         assertEq(nftOwnerAfter, buyer, "NFT should be transferred to buyer");
         assertEq(nftOwnerBefore, seller, "NFT should belong to seller before");
         
-        // Verify listing status
-        (,,,, bool isActive) = nftMarket.listings(listingId);
-        assertEq(isActive, false, "Listing should be marked as inactive");
+        // Verify listing status - 使用单独的函数来避免栈深度问题
+        _verifyListingStatus(listingId);
         
         console2.log("\n=== Test Results ===");
         console2.log("Token transfer successful");
         console2.log("NFT transfer successful");
         console2.log("Listing status updated successfully");
+    }
+    
+    function _verifyListingStatus(uint256 listingId) internal view {
+        (,,,, bool isActive) = nftMarket.listings(listingId);
+        assertEq(isActive, false, "Listing should be marked as inactive");
     }
     
     function test_PermitBuy_WithoutWhitelistSignature_ShouldRevert() public {
@@ -172,7 +176,7 @@ contract NFTMarketV2Test is Test {
         uint256 listingId = 0;
         uint256 deadline = block.timestamp + 1 hours;
         
-        // 将买家代币余额设为 0
+        // 将买家代币余额设为 0，但保留授权
         vm.prank(buyer);
         token.transfer(address(0xdead), token.balanceOf(buyer));
         
@@ -190,9 +194,52 @@ contract NFTMarketV2Test is Test {
         
         (uint8 v, bytes32 r, bytes32 s) = vm.sign(whitelistAdminPrivateKey, hash);
         
-        // 尝试购买
+        // 尝试购买 - 应该因为余额不足而失败
+        // 由于买家有授权但没有余额，应该先检查余额，抛出 PermitBuyInsufficientBalance 错误
         vm.prank(buyer);
-        vm.expectRevert();
+        vm.expectRevert(abi.encodeWithSelector(
+            NFTMarketV2.PermitBuyInsufficientBalance.selector,
+            buyer,
+            0,
+            NFT_PRICE
+        ));
+        nftMarket.permitBuy(buyer, listingId, deadline, v, r, s);
+    }
+    
+    function test_PermitBuy_InsufficientAllowance_ShouldRevert() public {
+        // 卖家上架 NFT
+        vm.prank(seller);
+        nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
+        
+        uint256 listingId = 0;
+        uint256 deadline = block.timestamp + 1 hours;
+        
+        // 撤销买家的授权
+        vm.prank(buyer);
+        token.approve(address(nftMarket), 0);
+        
+        // 创建签名
+        bytes32 domainSeparator = nftMarket.DOMAIN_SEPARATOR();
+        bytes32 structHash = keccak256(
+            abi.encode(
+                nftMarket.PERMIT_BUY_TYPEHASH(),
+                buyer,
+                listingId,
+                deadline
+            )
+        );
+        bytes32 hash = keccak256(abi.encodePacked("\x19\x01", domainSeparator, structHash));
+        
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(whitelistAdminPrivateKey, hash);
+        
+        // 尝试购买 - 应该因为授权不足而失败
+        vm.prank(buyer);
+        vm.expectRevert(abi.encodeWithSelector(
+            NFTMarketV2.PermitBuyInsufficientAllowance.selector,
+            buyer,
+            0,
+            NFT_PRICE
+        ));
         nftMarket.permitBuy(buyer, listingId, deadline, v, r, s);
     }
     
@@ -234,7 +281,7 @@ contract NFTMarketV2Test is Test {
         
         // Non-admin cannot set new admin
         vm.prank(buyer);
-        vm.expectRevert();
+        vm.expectRevert("NFTMarketV2: caller is not admin");
         nftMarket.setWhitelistAdmin(address(0x6));
     }
     
