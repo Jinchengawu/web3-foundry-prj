@@ -35,9 +35,14 @@ contract NFTMarketTest is Test {
     uint256 public constant INITIAL_BALANCE = 1000000 * 10**18; // 100万代币
     uint256 public constant NFT_TOKEN_ID = 1;
     
-    event NFTListed(uint256 indexed listingId, address indexed seller, address indexed nftContract, uint256 tokenId, uint256 price);
-    event NFTSold(uint256 indexed listingId, address indexed buyer, address indexed seller, address nftContract, uint256 tokenId, uint256 price);
-    event NFTListingCancelled(uint256 indexed listingId);
+    // 辅助函数：生成listingId
+    function getListingId(address nftContractAddr, uint256 tokenId) internal pure returns (string memory) {
+        return string(abi.encodePacked(nftContractAddr, tokenId));
+    }
+    
+    event NFTListed(string indexed listingId, address indexed seller, address indexed nftContract, uint256 tokenId, uint256 price);
+    event NFTSold(string indexed listingId, address indexed buyer, address indexed seller, address nftContract, uint256 tokenId, uint256 price);
+    event NFTListingCancelled(string indexed listingId);
 
     function setUp() public {
         // 部署支付代币
@@ -69,18 +74,19 @@ contract NFTMarketTest is Test {
     // 测试上架NFT - 成功情况
     function test_ListNFT_Success() public {
         uint256 price = 100 * 10**18; // 100代币
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         vm.startPrank(seller);
         
         vm.expectEmit(true, true, true, true);
-        emit NFTListed(0, seller, address(nftContract), NFT_TOKEN_ID, price);
+        emit NFTListed(listingId, seller, address(nftContract), NFT_TOKEN_ID, price);
         
         nftMarket.list(address(nftContract), NFT_TOKEN_ID, price);
         
         vm.stopPrank();
         
         // 验证上架信息
-        (address listingSeller, address listingNftContract, uint256 listingTokenId, uint256 listingPrice, bool isActive) = nftMarket.listings(0);
+        (address listingSeller, address listingNftContract, uint256 listingTokenId, uint256 listingPrice, bool isActive) = nftMarket.listings(listingId);
         assertEq(listingSeller, seller);
         assertEq(listingNftContract, address(nftContract));
         assertEq(listingTokenId, NFT_TOKEN_ID);
@@ -149,6 +155,7 @@ contract NFTMarketTest is Test {
     // 测试购买NFT - 成功情况
     function test_BuyNFT_Success() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -163,9 +170,9 @@ contract NFTMarketTest is Test {
         uint256 sellerBalanceBefore = paymentToken.balanceOf(seller);
         
         vm.expectEmit(true, true, true, true);
-        emit NFTSold(0, buyer, seller, address(nftContract), NFT_TOKEN_ID, price);
+        emit NFTSold(listingId, buyer, seller, address(nftContract), NFT_TOKEN_ID, price);
         
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         
         vm.stopPrank();
         
@@ -177,13 +184,14 @@ contract NFTMarketTest is Test {
         assertEq(nftContract.ownerOf(NFT_TOKEN_ID), buyer);
         
         // 验证上架状态变为非活跃
-        (,,,, bool isActive) = nftMarket.listings(0);
+        (,,,, bool isActive) = nftMarket.listings(listingId);
         assertFalse(isActive);
     }
 
     // 测试购买NFT - 失败情况：自己购买自己的NFT
     function test_BuyNFT_Fail_BuyOwnNFT() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 卖家上架NFT
         vm.startPrank(seller);
@@ -195,7 +203,7 @@ contract NFTMarketTest is Test {
         paymentToken.approve(address(nftMarket), price);
         
         // 这应该成功，因为合约允许自己购买自己的NFT
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         
         vm.stopPrank();
         
@@ -206,6 +214,7 @@ contract NFTMarketTest is Test {
     // 测试购买NFT - 失败情况：NFT被重复购买
     function test_BuyNFT_Fail_AlreadySold() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -215,7 +224,7 @@ contract NFTMarketTest is Test {
         // 第一个买家购买
         vm.startPrank(buyer);
         paymentToken.approve(address(nftMarket), price);
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         vm.stopPrank();
         
         // 第二个买家尝试购买已售出的NFT
@@ -223,7 +232,7 @@ contract NFTMarketTest is Test {
         paymentToken.approve(address(nftMarket), price);
         
         vm.expectRevert("NFTMarket: listing is not active");
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         
         vm.stopPrank();
     }
@@ -231,6 +240,7 @@ contract NFTMarketTest is Test {
     // 测试购买NFT - 失败情况：代币余额不足
     function test_BuyNFT_Fail_InsufficientBalance() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -245,7 +255,7 @@ contract NFTMarketTest is Test {
         paymentToken.approve(address(nftMarket), price);
         
         vm.expectRevert("NFTMarket: not enough payment token");
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         
         vm.stopPrank();
     }
@@ -255,15 +265,16 @@ contract NFTMarketTest is Test {
         vm.startPrank(buyer);
         paymentToken.approve(address(nftMarket), 100 * 10**18);
         
-        vm.expectRevert("NFTMarket: listing id does not exist");
-        nftMarket.buy(999);
+        vm.expectRevert("NFTMarket: listing is not active");
+        nftMarket.buy("0x0000000000000000000000000000000000000000000000000000000000000000");
         
         vm.stopPrank();
     }
 
-    // 测试取消上架
+    // 测试取消上架 - 成功情况
     function test_CancelListing() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -274,20 +285,21 @@ contract NFTMarketTest is Test {
         vm.startPrank(seller);
         
         vm.expectEmit(true, false, false, false);
-        emit NFTListingCancelled(0);
+        emit NFTListingCancelled(listingId);
         
-        nftMarket.cancelListing(0);
+        nftMarket.changeListingActive(listingId, false);
         
         vm.stopPrank();
         
         // 验证上架状态变为非活跃
-        (,,,, bool isActive) = nftMarket.listings(0);
+        (,,,, bool isActive) = nftMarket.listings(listingId);
         assertFalse(isActive);
     }
 
     // 测试取消上架 - 失败情况：非卖家取消
     function test_CancelListing_Fail_NotSeller() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -298,7 +310,7 @@ contract NFTMarketTest is Test {
         vm.startPrank(buyer);
         
         vm.expectRevert("NFTMarket: caller is not seller");
-        nftMarket.cancelListing(0);
+        nftMarket.changeListingActive(listingId, false);
         
         vm.stopPrank();
     }
@@ -307,6 +319,7 @@ contract NFTMarketTest is Test {
     function testFuzz_RandomPriceListingAndBuying(uint256 price) public {
         // 限制价格范围在 0.01-10000 代币之间
         price = bound(price, 0.01 * 10**18, 10000 * 10**18);
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 随机选择买家
         address[] memory buyers = new address[](3);
@@ -332,7 +345,7 @@ contract NFTMarketTest is Test {
         uint256 buyerBalanceBefore = paymentToken.balanceOf(randomBuyer);
         uint256 sellerBalanceBefore = paymentToken.balanceOf(seller);
         
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         
         vm.stopPrank();
         
@@ -348,6 +361,7 @@ contract NFTMarketTest is Test {
         assertEq(initialBalance, 0, "NFTMarket should have no initial token balance");
         
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 上架NFT
         vm.startPrank(seller);
@@ -357,7 +371,7 @@ contract NFTMarketTest is Test {
         // 购买NFT
         vm.startPrank(buyer);
         paymentToken.approve(address(nftMarket), price);
-        nftMarket.buy(0);
+        nftMarket.buy(listingId);
         vm.stopPrank();
         
         // 验证NFTMarket合约仍然没有代币余额
@@ -368,6 +382,7 @@ contract NFTMarketTest is Test {
     // 测试使用transferWithCallback购买NFT
     function test_BuyNFT_WithTransferCallback() public {
         uint256 price = 100 * 10**18;
+        string memory listingId = getListingId(address(nftContract), NFT_TOKEN_ID);
         
         // 先上架NFT
         vm.startPrank(seller);
@@ -380,8 +395,11 @@ contract NFTMarketTest is Test {
         uint256 buyerBalanceBefore = paymentToken.balanceOf(buyer);
         uint256 sellerBalanceBefore = paymentToken.balanceOf(seller);
         
-        // 编码listingId作为回调数据
-        bytes memory data = abi.encode(uint256(0));
+        // 将listingId编码为bytes
+        bytes memory data = abi.encodePacked(listingId);
+        
+        vm.expectEmit(true, true, true, true);
+        emit NFTSold(listingId, buyer, seller, address(nftContract), NFT_TOKEN_ID, price);
         
         paymentToken.transferWithCallbackAndData(address(nftMarket), price, data);
         
@@ -391,38 +409,49 @@ contract NFTMarketTest is Test {
         assertEq(paymentToken.balanceOf(buyer), buyerBalanceBefore - price);
         assertEq(paymentToken.balanceOf(seller), sellerBalanceBefore + price);
         assertEq(nftContract.ownerOf(NFT_TOKEN_ID), buyer);
+        
+        // 验证上架状态变为非活跃
+        (,,,, bool isActive) = nftMarket.listings(listingId);
+        assertFalse(isActive);
     }
 
     // 测试多个NFT的上架和购买
-    function test_MultipleNFTs_ListingAndBuying() public {
-        // 铸造多个NFT
+    function test_MultipleNFTs() public {
+        // 给卖家铸造更多NFT
         nftContract.mint(seller, 2);
         nftContract.mint(seller, 3);
         
-        vm.startPrank(seller);
+        uint256 price1 = 100 * 10**18;
+        uint256 price2 = 200 * 10**18;
+        uint256 price3 = 300 * 10**18;
+        
+        string memory listingId1 = getListingId(address(nftContract), 1);
+        string memory listingId2 = getListingId(address(nftContract), 2);
+        string memory listingId3 = getListingId(address(nftContract), 3);
         
         // 上架多个NFT
-        nftMarket.list(address(nftContract), 1, 100 * 10**18);
-        nftMarket.list(address(nftContract), 2, 200 * 10**18);
-        nftMarket.list(address(nftContract), 3, 300 * 10**18);
-        
+        vm.startPrank(seller);
+        nftMarket.list(address(nftContract), 1, price1);
+        nftMarket.list(address(nftContract), 2, price2);
+        nftMarket.list(address(nftContract), 3, price3);
         vm.stopPrank();
         
-        // 不同买家购买不同NFT
+        // 购买NFT 1
         vm.startPrank(buyer);
-        paymentToken.approve(address(nftMarket), 100 * 10**18);
-        nftMarket.buy(0); // 购买NFT 1
+        paymentToken.approve(address(nftMarket), price1);
+        nftMarket.buy(listingId1); // 购买NFT 1
         vm.stopPrank();
         
+        // 购买NFT 2
         vm.startPrank(buyer2);
-        paymentToken.approve(address(nftMarket), 200 * 10**18);
-        nftMarket.buy(1); // 购买NFT 2
+        paymentToken.approve(address(nftMarket), price2);
+        nftMarket.buy(listingId2);
         vm.stopPrank();
         
         // 验证所有权
         assertEq(nftContract.ownerOf(1), buyer);
         assertEq(nftContract.ownerOf(2), buyer2);
-        assertEq(nftContract.ownerOf(3), seller); // 未售出
+        assertEq(nftContract.ownerOf(3), seller); // NFT 3 还未售出
     }
 }
 

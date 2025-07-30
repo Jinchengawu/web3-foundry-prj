@@ -39,15 +39,12 @@ contract NFTMarket  is ITokenReceiver{
     }
     
     // 所有上架的NFT，使用listingId作为唯一标识
-    mapping(uint256 => Listing) public listings;
-    uint256 public nextListingId;
-
-
+    mapping(string => Listing) public listings;
     
     // NFT上架和购买事件
-    event NFTListed(uint256 indexed listingId, address indexed seller, address indexed nftContract, uint256 tokenId, uint256 price);
-    event NFTSold(uint256 indexed listingId, address indexed buyer, address indexed seller, address nftContract, uint256 tokenId, uint256 price);
-    event NFTListingCancelled(uint256 indexed listingId);
+    event NFTListed(string indexed listingId, address indexed seller, address indexed nftContract, uint256 tokenId, uint256 price);
+    event NFTSold(string indexed listingId, address indexed buyer, address indexed seller, address nftContract, uint256 tokenId, uint256 price);
+    event NFTListingCancelled(string indexed listingId);
     
     // 构造函数，设置支付代币地址
     constructor(address _paymentTokenAddress) {
@@ -62,14 +59,7 @@ contract NFTMarket  is ITokenReceiver{
         require(_price > 0, "NFTMarket: price must be greater than zero");
         // 检查nft合约是否有效
         require(_nftContract != address(0), "NFTMarket: nft contract address cannot be zero");
-        // 检查nft是否已经上架
-        for (uint256 i = 0; i < nextListingId; i++) {
-            if (listings[i].nftContract == _nftContract && 
-                listings[i].tokenId == _tokenId && 
-                listings[i].isActive) {
-                revert("NFTMarket: nft is already listed");
-            }
-        }
+           
         // 检查调用者是否为NFT的所有者
         IERC721 nftContract = IERC721(_nftContract);
         address owner = nftContract.ownerOf(_tokenId);
@@ -81,8 +71,14 @@ contract NFTMarket  is ITokenReceiver{
             nftContract.getApproved(_tokenId) == address(this),
             "NFTMarket: market is not approved to transfer this NFT"
         );
-        // 创建新的上架信息
-        uint256 listingId = nextListingId;
+        
+        // 生成唯一标识符
+        string memory listingId = string(abi.encodePacked(_nftContract, _tokenId));
+        
+        // 检查_nftContract & _tokenId 是否已经上架
+        Listing memory _listing = listings[listingId];
+        require(_listing.tokenId != _tokenId, "NFTMarket: nft is already listed"); 
+
         listings[listingId] = Listing({
             seller: owner,
             nftContract: _nftContract,
@@ -90,23 +86,23 @@ contract NFTMarket  is ITokenReceiver{
             price: _price,
             isActive: true
         });
-        nextListingId++;
         emit NFTListed(listingId, owner, _nftContract, _tokenId, _price);
     }
+    
     // 取消
-    function cancelListing(uint256 _listingId) public {
+    function changeListingActive(string memory _listingId, bool _isActive) public {
         Listing storage listing = listings[_listingId];
-        require(_listingId < nextListingId, "NFTMarket: listing id does not exist");
         require(listing.isActive, "NFTMarket: listing is not active");
         require(listing.seller == msg.sender, "NFTMarket: caller is not seller");
-        listing.isActive = false;
+
+        listing.isActive = _isActive;
+
         emit NFTListingCancelled(_listingId);
     }
+   
     // 购买
-    function buy(uint256 _listingId) public {
+    function buy(string memory _listingId) public {
         Listing storage listing = listings[_listingId];
-        // 检查listingId是否有效
-        require(_listingId < nextListingId, "NFTMarket: listing id does not exist");
         // 检查listing是否处于活跃状态
         require(listing.isActive, "NFTMarket: listing is not active");
         // 检查买家是否有足够的代币
@@ -126,8 +122,8 @@ contract NFTMarket  is ITokenReceiver{
         // 检查调用者是否为代币合约
         require(msg.sender == address(paymentToken), "NFTMarket: caller is not payment token");
         // 解析附加数据，获取listingId
-        require(data.length == 32, "NFTMarket: invalid data length");
-        uint256 listingId = abi.decode(data, (uint256));
+        require(data.length > 0, "NFTMarket: invalid data length");
+        string memory listingId = string(data);
         // 检查上架信息是否存在且处于活跃状态
         Listing storage listing = listings[listingId];
         require(listing.isActive, "NFTMarket: listing is not active");

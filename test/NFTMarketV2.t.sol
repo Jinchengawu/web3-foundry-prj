@@ -23,6 +23,11 @@ contract NFTMarketV2Test is Test {
     uint256 public constant NFT_PRICE = 100 * 10**18;
     uint256 public constant TOKEN_ID = 1;
     
+    // 辅助函数：生成listingId
+    function getListingId(address nftContract, uint256 tokenId) internal pure returns (string memory) {
+        return string(abi.encodePacked(nftContract, tokenId));
+    }
+    
     function setUp() public {
         // 生成白名单管理员的私钥和地址
         whitelistAdminPrivateKey = 0x1234567890123456789012345678901234567890123456789012345678901234;
@@ -63,7 +68,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         
         // 记录初始状态
         uint256 sellerInitialBalance = token.balanceOf(seller);
@@ -121,7 +126,7 @@ contract NFTMarketV2Test is Test {
         console2.log("Listing status updated successfully");
     }
     
-    function _verifyListingStatus(uint256 listingId) internal view {
+    function _verifyListingStatus(string memory listingId) internal view {
         (,,,, bool isActive) = nftMarket.listings(listingId);
         assertEq(isActive, false, "Listing should be marked as inactive");
     }
@@ -131,7 +136,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         uint256 deadline = block.timestamp + 1 hours;
         
         // 尝试使用无效签名进行购买
@@ -145,7 +150,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         uint256 deadline = block.timestamp - 1; // 过期时间
         
         // 创建签名
@@ -173,7 +178,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         uint256 deadline = block.timestamp + 1 hours;
         
         // 将买家代币余额设为 0，但保留授权
@@ -211,7 +216,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         uint256 deadline = block.timestamp + 1 hours;
         
         // 撤销买家的授权
@@ -248,7 +253,7 @@ contract NFTMarketV2Test is Test {
         vm.prank(seller);
         nftMarket.list(address(nft), TOKEN_ID, NFT_PRICE);
         
-        uint256 listingId = 0;
+        string memory listingId = getListingId(address(nft), TOKEN_ID);
         
         // 记录初始状态
         uint256 sellerInitialBalance = token.balanceOf(seller);

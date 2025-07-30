@@ -21,7 +21,7 @@ import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
 contract NFTMarketV2 is NFTMarket, EIP712 {
     // EIP-712 类型哈希，用于白名单购买签名验证
     bytes32 public constant PERMIT_BUY_TYPEHASH = 
-        keccak256("PermitBuy(address buyer,uint256 listingId,uint256 deadline)");
+        keccak256("PermitBuy(address buyer,string listingId,uint256 deadline)");
     
     // 白名单用户 nonce 映射，用于防重放攻击
     mapping(address => uint256) public whitelistNonces;
@@ -33,12 +33,12 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
     error PermitBuyExpiredSignature(uint256 deadline);
     error PermitBuyInvalidSigner(address signer, address admin);
     error PermitBuyInvalidBuyer(address expectedBuyer, address actualBuyer);
-    error PermitBuyInvalidListingId(uint256 expectedListingId, uint256 actualListingId);
+    error PermitBuyInvalidListingId(string expectedListingId, string actualListingId);
     error PermitBuyInsufficientBalance(address buyer, uint256 balance, uint256 required);
     error PermitBuyInsufficientAllowance(address buyer, uint256 allowance, uint256 required);
     
     // 事件定义
-    event PermitBuyExecuted(address indexed buyer, uint256 indexed listingId, uint256 price, uint256 deadline);
+    event PermitBuyExecuted(address indexed buyer, string indexed listingId, uint256 price, uint256 deadline);
     event WhitelistAdminChanged(address indexed oldAdmin, address indexed newAdmin);
     
     constructor(address _paymentTokenAddress) 
@@ -59,7 +59,7 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
      */
     function permitBuy(
         address buyer,
-        uint256 listingId,
+        string memory listingId,
         uint256 deadline,
         uint8 v,
         bytes32 r,
@@ -73,7 +73,6 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
         
         // 检查上架信息
         Listing storage listing = listings[listingId];
-        require(listingId < nextListingId, "NFTMarketV2: listing id does not exist");
         require(listing.isActive, "NFTMarketV2: listing is not active");
         
         // 检查买家是否有足够的代币余额
@@ -138,14 +137,11 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
      */
     function _validatePermitBuyParams(
         address buyer,
-        uint256 listingId,
+        string memory listingId,
         uint256 deadline
     ) internal view {
         // 检查购买者地址是否有效
         require(buyer != address(0), "NFTMarketV2: buyer cannot be zero address");
-        
-        // 检查上架ID是否有效
-        require(listingId < nextListingId, "NFTMarketV2: listing id does not exist");
         
         // 检查签名是否过期
         if (block.timestamp > deadline) {
@@ -164,21 +160,17 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
      */
     function _verifyPermitBuySignature(
         address buyer,
-        uint256 listingId,
+        string memory listingId,
         uint256 deadline,
         uint8 v,
         bytes32 r,
         bytes32 s
     ) internal {
-        // 构建结构体哈希
-        bytes32 structHash = keccak256(
-            abi.encode(PERMIT_BUY_TYPEHASH, buyer, listingId, deadline)
-        );
-        
-        // 构建完整的 EIP-712 哈希
+        // 计算消息哈希
+        bytes32 structHash = keccak256(abi.encode(PERMIT_BUY_TYPEHASH, buyer, listingId, deadline));
         bytes32 hash = _hashTypedDataV4(structHash);
         
-        // 从签名中恢复签名者地址
+        // 恢复签名者地址
         address signer = ecrecover(hash, v, r, s);
         
         // 验证签名者是否为白名单管理员
@@ -186,9 +178,12 @@ contract NFTMarketV2 is NFTMarket, EIP712 {
             revert PermitBuyInvalidSigner(signer, whitelistAdmin);
         }
         
+        // 验证购买者地址
+        if (buyer != msg.sender) {
+            revert PermitBuyInvalidBuyer(buyer, msg.sender);
+        }
+        
         // 增加 nonce 防止重放攻击
         whitelistNonces[buyer]++;
     }
-    
-
 }
