@@ -200,9 +200,12 @@ function deployContract(network, scriptName = '') {
         '-vvvv'
     ];
     
-    if (networkConfig.verify && networkConfig.etherscanApiKey) {
+    // 临时禁用验证，直到获得有效的API密钥
+    if (networkConfig.verify && networkConfig.etherscanApiKey && networkConfig.etherscanApiKey !== '你的Etherscan API密钥') {
         command.push(`--verify`);
         command.push(`--etherscan-api-key "${networkConfig.etherscanApiKey}"`);
+    } else {
+        log('⚠️  跳过合约验证 (API密钥未配置或无效)', 'yellow');
     }
     
     try {

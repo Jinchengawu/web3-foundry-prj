@@ -2,3 +2,31 @@
 TokenV3: 0xEaF42Bda0E77dD8c14f708d78f032f6a9101A494
 TokenBankV3: 0xe836B76454420F92b2E12B8b5F55cf78cf61b97d
 交易哈希: 0x062cba963d360bcc33feb311ec9c056b281ac2ec27b5aa74a6002b537b4d7a31
+
+
+
+
+======================
+
+##### sepolia
+✅  [Success] Hash: 0x35fa9a40d30c424a2738545d394addb8c1b1b38dc56618d456645fa3f4ea8700
+Contract Address: 0x28E9F6eF779E601E5be0dc26e806DF4694CD41C1
+Block: 8883698
+Paid: 0.000102913939395638 ETH (1867537 gas * 0.055106774 gwei)
+
+
+##### sepolia
+✅  [Success] Hash: 0x352341662d07ec235b02b91076265b99048c4c19ab3ad74bfbde8b5a753a0c3a
+Contract Address: 0x862E676F73C20e3fb374B06a76b2d5DE3F8317b7
+Block: 8883698
+Paid: 0.0001219623122168 ETH (2213200 gas * 0.055106774 gwei)
+
+
+##### sepolia
+✅  [Success] Hash: 0x73575bd0243be2f748a0fc445935ad5d51324c21dc3411eae52b102150c48100
+Contract Address: 0xb628A80c04e7DDbe9fA39AbF9121767C24B8b0Da
+Block: 8883698
+Paid: 0.000241780309643712 ETH (4387488 gas * 0.055106774 gwei)
+
+✅ Sequence #1 on sepolia | Total Paid: 0.00046665656125615 ETH (8468225 gas * avg 0.055106774 gwei)
+                       
