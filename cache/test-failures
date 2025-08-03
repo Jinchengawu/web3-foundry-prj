@@ -1,1 +1,1 @@
-test_BuyNFT_Fail_InvalidListingId
+test_CompleteWorkflow|test_ConstructorZeroAddress|test_EmergencyWithdrawETH|test_MulticallWithValue

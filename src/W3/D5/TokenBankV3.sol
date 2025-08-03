@@ -130,13 +130,15 @@ contract TokenBankV3 is TokenBankV2 {
         // 尝试通过 permit 获取授权（如果代币支持）
         try this.tryPermit(tokenAddress, owner, address(this), amount, deadline, v, r, s) {
             // permit 成功，继续执行转账
+            _executeDeposit(owner, tokenAddress, amount);
         } catch {
             // permit 失败，说明代币不支持 permit，需要用户提前 approve
             // 这里我们继续执行，如果用户没有 approve 会失败
+            revert("Permit failed");
         }
         
         // 执行存款操作
-        _executeDeposit(owner, tokenAddress, amount);
+        
         
         // 发出事件
         emit DepositWithPermit2(owner, tokenAddress, amount, deadline);
