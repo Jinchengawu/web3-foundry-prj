@@ -3,19 +3,11 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 // 定义接收代币回调的接口
 interface ITokenReceiver {
     function tokensReceived(address from, uint256 amount, bytes calldata data) external returns (bool);
-}
-
-// 简单的ERC721接口
-interface IERC721 {
-    function ownerOf(uint256 tokenId) external view returns (address);
-    function transferFrom(address from, address to, uint256 tokenId) external;
-    function safeTransferFrom(address from, address to, uint256 tokenId) external;
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
-    function getApproved(uint256 tokenId) external view returns (address);
 }
 
 // 扩展的ERC20接口，添加带有回调功能的转账函数
