@@ -17,7 +17,7 @@ import "../src/W2/D3/ERC20_Plus.sol";
 contract DeployProxyScript is Script {
     
     // 部署的合约地址
-    ERC20_Plus public paymentToken;
+    ERC20V2 public paymentToken;
     BaseERC721 public erc721Implementation;
     NFTMarket public nftMarketV1Implementation;
     NFTMarketV2 public nftMarketV2Implementation;
@@ -36,7 +36,7 @@ contract DeployProxyScript is Script {
         
         // 1. 部署 ERC20 支付代币
         console.log("Deploying ERC20 Payment Token...");
-        paymentToken = new ERC20_Plus();
+        paymentToken = new ERC20V2("PaymentToken", "PAY");
         console.log("ERC20 Payment Token deployed at:", address(paymentToken));
         
         // 2. 部署 ERC721 实现合约

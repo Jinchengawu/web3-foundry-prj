@@ -26,7 +26,7 @@ contract ProxyTest is Test {
     BaseERC721 public erc721V2;
     NFTMarket public nftMarketV1;
     NFTMarketV2 public nftMarketV2;
-    ERC20_Plus public paymentToken;
+    ERC20V2 public paymentToken;
     
     // 测试地址
     address public owner;
@@ -45,7 +45,7 @@ contract ProxyTest is Test {
         user2 = makeAddr("user2");
         
         // 部署 ERC20 代币合约作为支付代币
-        paymentToken = new ERC20_Plus();
+        paymentToken = new ERC20V2("TestToken", "TEST");
         
         // 部署 ERC721 实现合约
         erc721V1 = new BaseERC721("TestNFT", "TEST", "https://test.com/");

@@ -30,3 +30,38 @@ Paid: 0.000241780309643712 ETH (4387488 gas * 0.055106774 gwei)
 
 ✅ Sequence #1 on sepolia | Total Paid: 0.00046665656125615 ETH (8468225 gas * avg 0.055106774 gwei)
                        
+
+======================
+
+
+
+
+==========================
+
+Chain 11155111
+
+Estimated gas price: 0.002505826 gwei
+
+Estimated total gas used for script: 7174891
+
+Estimated amount required: 0.000017979028414966 ETH
+
+==========================
+
+##### sepolia
+✅  [Success] Hash: 0xe0e775f569163dde94dc7d0d60a9f10d39154e8a4ebdb4eac2a915cc9163e537
+Contract Address: 0xBE3eb1794d87a9fCa05C603E95Bb91828C80Aec5
+Block: 8926107
+Paid: 0.000001553854992639 ETH (899697 gas * 0.001727087 gwei)
+
+
+##### sepolia
+🚀 成功部署的合约地址：
+TokenV3 (ERC20代币): 0x9CEAee8E52B76F4C296aF6293675fB9b797fd0Af
+TokenBankV4 (银行合约): 0xe5c40B5F76700c3177E76c148D1A6b8569c69Bd9
+BankAutomation (自动化合约): 0xBE3eb1794d87a9fCa05C603E95Bb91828C80Aec5
+⚙️ 配置参数：
+自动转移阈值: 1000 tokens (1000000000000000000000 wei)
+检查间隔: 300 秒 (5分钟)
+最小转移间隔: 3600 秒 (1小时)
+合约所有者: 0xcC44277d1d6eC279Cd81e23111B1701758A3f82F
