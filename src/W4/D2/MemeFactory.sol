@@ -79,8 +79,8 @@ contract MemeFactory is Ownable {
     address public immutable memeImplementation;
     
     // 费用分配比例 (1% = 100)
-    uint256 public constant PROJECT_FEE_RATIO = 100; // 1%
-    uint256 public constant CREATOR_FEE_RATIO = 9900; // 99%
+    uint256 public constant PROJECT_FEE_RATIO = 500; // 5%
+    uint256 public constant CREATOR_FEE_RATIO = 9400; // 94%
     uint256 public constant FEE_DENOMINATOR = 10000; // 100%
     
     // 存储 Meme 信息

@@ -65,3 +65,18 @@ BankAutomation (自动化合约): 0xBE3eb1794d87a9fCa05C603E95Bb91828C80Aec5
 检查间隔: 300 秒 (5分钟)
 最小转移间隔: 3600 秒 (1小时)
 合约所有者: 0xcC44277d1d6eC279Cd81e23111B1701758A3f82F
+
+
+======================
+MemeFactory 
+== Logs ==
+  MemeFactory deployed at: 0x9dA4F50d6543f21BdD7Bf8ab28d7C2488AC6D32F
+  Meme token deployed at: 0x8fde1F4b9edAa026e9bF9DEc878EdE9e94DD9AA3
+  Symbol: DOGE
+  Total supply: 1000000
+  Per mint: 1000
+  Price per token: 1000000000000000
+  Mint cost for one batch: 1000000000000000000
+
+## Setting up 1 EVM.
+==========================
