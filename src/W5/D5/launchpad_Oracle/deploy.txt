@@ -1,0 +1,6 @@
+========
+Enter keystore password:
+Deployer: 0xcC44277d1d6eC279Cd81e23111B1701758A3f82F
+Deployed to: 0xb75499b713a3B76B0e2c161F9c8860b3c286677d
+Transaction hash: 0x3b007899c82cda06519805801478af4b7770c66850fe9be08fbd3380aed1cd8c
+========
