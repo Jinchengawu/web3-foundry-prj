@@ -19,8 +19,8 @@ import {ILendingMarket} from './ILendingMarket.sol';        // 导入借贷市�
 
 // 导入 OpenZeppelin 标准库合约
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";           // ERC20 代币标准
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";    // 防重入攻击保护
-import "@openzeppelin/contracts/security/Pausable.sol";           // 可暂停功能
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";    // 防重入攻击保护
+import "@openzeppelin/contracts/utils/Pausable.sol";           // 可暂停功能
 import "@openzeppelin/contracts/access/Ownable.sol";              // 所有权管理
 
 /**
