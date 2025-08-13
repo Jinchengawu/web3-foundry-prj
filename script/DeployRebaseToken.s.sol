@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.18;
 
 import "forge-std/Script.sol";
 import "../src/W6/D1/rebaseToken/RebaseToken.sol";

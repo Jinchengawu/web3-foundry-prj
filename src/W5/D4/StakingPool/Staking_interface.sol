@@ -17,7 +17,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 /**
  * @title KK Token 
  */
- interface IToken is ERC20 {
+ interface IToken {
+  function transfer(address to, uint256 amount) external returns (bool);
+  function balanceOf(address account) external view returns (uint256);
   function mint(address to, uint256 amount) external;
 }
 

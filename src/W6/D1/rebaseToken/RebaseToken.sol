@@ -1,18 +1,15 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.30;
+pragma solidity ^0.8.18;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 /**
  * @title RebaseToken
  * @dev 通缩型ERC20 Token，通过rebase机制实现每年1%的通缩
  * @author dreamworks.cnn@gmail.com
  */
 contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
-    using SafeMath for uint256;
 
     // 核心变量
     uint256 private _totalSupply;
@@ -61,7 +58,7 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      * @return 实际余额
      */
     function balanceOf(address account) public view override returns (uint256) {
-        return _balances[account].mul(_rebaseIndex).div(1e18);
+        return _balances[account]*_rebaseIndex /1e18;
     }
 
     /**
@@ -69,7 +66,7 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      * @return 当前总供应量
      */
     function totalSupply() public view override returns (uint256) {
-        return _totalSupply.mul(_rebaseIndex).div(1e18);
+        return _totalSupply * _rebaseIndex / 1e18;
     }
 
     /**
@@ -102,7 +99,7 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      */
     function rebase() external onlyOwner nonReentrant {
         require(
-            block.timestamp >= _lastRebaseTime.add(MIN_REBASE_INTERVAL),
+            block.timestamp >= _lastRebaseTime + MIN_REBASE_INTERVAL,
             "RebaseToken: Rebase interval not met"
         );
 
@@ -111,8 +108,8 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
 
         // 计算新的rebase指数
         // newIndex = oldIndex * (1 - annualDeflation / 10000)
-        uint256 deflationFactor = uint256(10000).sub(_annualDeflation);
-        _rebaseIndex = _rebaseIndex.mul(deflationFactor).div(10000);
+        uint256 deflationFactor = 10000 - _annualDeflation;
+        _rebaseIndex = _rebaseIndex * deflationFactor / 10000;
 
         _lastRebaseTime = block.timestamp;
 
@@ -136,10 +133,10 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
         require(ownerBalance >= amount, "RebaseToken: Insufficient balance");
 
         // 计算原始余额的转账数量
-        uint256 rawAmount = amount.mul(1e18).div(_rebaseIndex);
+        uint256 rawAmount = amount * 1e18 / _rebaseIndex;
 
-        _balances[owner] = _balances[owner].sub(rawAmount);
-        _balances[to] = _balances[to].add(rawAmount);
+        _balances[owner] = _balances[owner] - rawAmount;
+        _balances[to] = _balances[to] + rawAmount;
 
         emit Transfer(owner, to, amount);
         return true;
@@ -168,10 +165,10 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
         require(fromBalance >= amount, "RebaseToken: Insufficient balance");
 
         // 计算原始余额的转账数量
-        uint256 rawAmount = amount.mul(1e18).div(_rebaseIndex);
+        uint256 rawAmount = amount * 1e18 / _rebaseIndex;
 
-        _balances[from] = _balances[from].sub(rawAmount);
-        _balances[to] = _balances[to].add(rawAmount);
+        _balances[from] = _balances[from] - rawAmount;
+        _balances[to] = _balances[to] + rawAmount;
 
         _spendAllowance(from, spender, amount);
 
@@ -198,7 +195,7 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      */
     function increaseAllowance(address spender, uint256 addedValue) public returns (bool) {
         address owner = _msgSender();
-        _approve(owner, spender, allowance(owner, spender).add(addedValue));
+        _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
     }
 
@@ -212,7 +209,7 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
         address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
         require(currentAllowance >= subtractedValue, "RebaseToken: Decreased allowance below zero");
-        _approve(owner, spender, currentAllowance.sub(subtractedValue));
+        _approve(owner, spender, currentAllowance - subtractedValue);
         return true;
     }
 
@@ -232,12 +229,19 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      * @param spender 被授权地址
      * @param amount 授权金额
      */
-    function _approve(address owner, address spender, uint256 amount) internal override {
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount,
+        bool emitEvent
+    ) internal virtual override {
         require(owner != address(0), "RebaseToken: Approve from zero address");
         require(spender != address(0), "RebaseToken: Approve to zero address");
 
         _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
+        if (emitEvent) {
+            emit Approval(owner, spender, amount);
+        }
     }
 
     /**
@@ -246,11 +250,11 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
      * @param spender 被授权地址
      * @param amount 消费金额
      */
-    function _spendAllowance(address owner, address spender, uint256 amount) internal {
+    function _spendAllowance(address owner, address spender, uint256 amount) internal override {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
             require(currentAllowance >= amount, "RebaseToken: Insufficient allowance");
-            _approve(owner, spender, currentAllowance.sub(amount));
+            _approve(owner, spender, currentAllowance - amount);
         }
     }
 
@@ -274,7 +278,11 @@ contract RebaseToken is ERC20, Ownable, ReentrancyGuard {
 
     /**
      * @dev 获取合约信息
-     * @return 合约信息结构
+     * @return totalSupply_ 原始总供应量
+     * @return rebaseIndex_ 当前rebase指数
+     * @return lastRebaseTime_ 上次rebase时间
+     * @return annualDeflation_ 年通缩率
+     * @return actualTotalSupply 当前实际总供应量
      */
     function getContractInfo() external view returns (
         uint256 totalSupply_,

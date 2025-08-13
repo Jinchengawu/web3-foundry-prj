@@ -70,7 +70,7 @@ contract KKStaking is IStaking, ReentrancyGuard, Pausable, Ownable {
      * @dev 构造函数，在合约部署时执行一次
      * @param _token KK Token 合约地址
      */
-    constructor(IToken _token) {
+    constructor(IToken _token) Ownable(msg.sender) {
         // 验证传入的代币地址是否有效（不能是零地址）
         require(address(_token) != address(0), "Invalid token address");
         // 设置 KK Token 合约地址
@@ -276,7 +276,7 @@ contract KKStaking is IStaking, ReentrancyGuard, Pausable, Ownable {
         // ILendingMarket(lendingMarket).deposit{value: amount}();
         
         // 或者直接转账到借贷市场
-        (bool success, ) = payable(lendingMarket).call{value: amount}("");
+        (bool success, ) = address(lendingMarket).call{value: amount}("");
         // 验证转账是否成功
         require(success, "Failed to deposit to lending market");
     }
